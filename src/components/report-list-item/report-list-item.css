@@ -1,0 +1,100 @@
+.report-wrp {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+}
+
+.report-left {
+  flex: 9;
+  width: 0;
+}
+
+.report-right {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.r-title {
+  color: #101010;
+  font-size: 0.875rem;
+  margin: 0 0px 6px 0;
+  display: flex;
+  align-items: center;
+  line-height: 1.2;
+}
+
+.r-name {
+  margin-right: 5px;
+  font-weight: bold;
+  word-break: break-all;
+}
+
+.r-status{
+  flex: 0 0 auto;
+  margin-right: 5px;
+}
+
+.r-text {
+  margin: 0 0 4px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-x: hidden;
+  line-height: 1.5em;
+  word-break: break-all;
+  font-size: 0.75rem;
+  color: #9b9b9b;
+  overflow-y: hidden;
+}
+
+.report-left .r-text:last-child {
+  margin-bottom: 0;
+}
+
+.r-date {
+  color: #96989d;
+  font-size: 0.75rem;
+  text-align: right;
+  font-weight: normal;
+  margin: 0 0 1.2rem;
+}
+
+.r-stars {
+  max-height: 1rem;
+  max-width: 5.5rem;
+}
+
+.unread {
+  align-self: flex-start;
+}
+
+.r-opinion {
+  line-height: 1.15rem;
+  border: 1px solid rgba(85, 133, 240, 1);
+  border-radius: 2px;
+  font-size: 0.8rem;
+  color: rgba(85, 133, 240, 1);
+  background-color: #fff;
+  outline: none;
+  margin-bottom: 1.2rem;
+  padding: 2px 0;
+}
+
+.r-copy {
+  line-height: 1.15rem;
+  border: none;
+  border-radius: 2px;
+  font-size: 0.8rem;
+  color: #fff;
+  background-image: linear-gradient(135deg, #719dff, #4c83ff);
+  outline: none;
+  margin-bottom: 1.2rem;
+  padding: 4px 0;
+  z-index: 9;
+  align-self: stretch;
+}
+
+.draft{
+  color: #999;
+}

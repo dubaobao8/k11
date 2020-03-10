@@ -1,0 +1,97 @@
+.form-item {
+  padding: 15px;
+  border: 1px solid #eee;
+  border-left: none;
+  border-right: none;
+  background-color: #fff;
+  color: #333;
+  line-height: 1.35;
+  font-size: 0.875rem;
+}
+
+
+.form-inline-between {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.form-inline-left {
+  flex: 7;
+  width: 0;
+}
+
+.form-inline-right {
+  flex: 7;
+  width: 0;
+  /*cursor: pointer;*/
+}
+
+
+.form-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-title {
+  font-size: 0.875rem;
+}
+
+.input-field-inline {
+  outline: none;
+  border: none;
+  font-size: 0.875rem;
+  text-align: right;
+}
+
+.red-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #F22242;
+  vertical-align: top;
+  margin-left: 2px;
+}
+
+.required-notice{
+  color: #F22242;
+  font-size: 0.875rem;
+}
+
+.picker-right {
+  text-align: left;
+  font-size: 0.875rem;
+  padding-right: 1.1rem;
+  position: relative;
+  display: inline-flex;
+  justify-content: flex-end;
+  align-items: center;
+  word-break: break-all;
+  cursor: pointer !important;
+}
+
+.picker-right::after {
+  content: "\F054";
+  color: #bbb;
+  font-family: "FontAwesome" !important;
+  position: absolute;
+  right: 0;
+}
+
+.placeholder {
+  color: #bbb;
+}
+
+.right-full .form-inline-left {
+  flex: 0 0 auto;
+  width: auto;
+
+}
+
+.right-full .form-inline-right {
+  flex: 1 0 0;
+  width: auto;
+  margin-left: 5px;
+}

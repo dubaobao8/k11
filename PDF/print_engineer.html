@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>工程单</title>
+  <link rel="stylesheet" href="print_css/layui.css" />
+  <link rel="stylesheet" href="print_css/form.css">
+  <style>
+    .layui-table td,
+    .layui-table th {
+      text-align: center;
+      height: 16px;
+      padding: 9px 0px 9px 0px;
+    }
+
+    .content_left {
+      text-align: left !important;
+      font-size: 12px !important;
+    }
+
+    .eng_table {
+      width: 100%;
+      /* border: 1px solid #cdcdcd; */
+      border-collapse: collapse;
+
+    }
+
+    .eng_table td {
+      padding: 9px 5px 9px 10px;
+      /* border: 1px solid #cdcdcd; */
+      height: 16px;
+      text-align: left;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="report">
+    <div id="report-content">
+      <section class="page">
+        <header>
+          <p class="port_number"></p>
+          <!-- <p class="port_number">Ref: {{list.work_num}}</p> -->
+          <article class="port_title">广州K11管理服务中心</article>
+          <p class="port_title">工程单</p>
+        </header>
+        <main>
+          <p style="margin-bottom: 5px">日期：</p>
+          <table class="eng_table layui-table">
+            <tr>
+              <td colspan="2" style="height: 70px; vertical-align: top;">报修部门：</td>
+              <td colspan="3" style="height: 70px; vertical-align: top;">报修人姓名：</td>
+              <td colspan="2" style="height: 70px; vertical-align: top;">联系方式：</td>
+              <td colspan="3" style="height: 70px; vertical-align: top;">要求完工日期：</td>
+            </tr>
+            <tr>
+              <td colspan="10">工作类型：</td>
+            </tr>
+            <tr>
+              <td colspan="10">工作地点：</td>
+            </tr>
+            <tr>
+              <td colspan="2">接收人：</td>
+              <td colspan="3">日期/时间：</td>
+              <td colspan="1">班组接收人：</td>
+              <td colspan="1"></td>
+              <td colspan="3">日期/时间：</td>
+            </tr>
+            <tr>
+              <td colspan="2">物资名称：</td>
+              <td colspan="3">规格：</td>
+              <td colspan="1">单位：</td>
+              <td colspan="1">数量：</td>
+              <td colspan="3">备注：</td>
+            </tr>
+            <tr>
+              <td colspan="2"></td>
+              <td colspan="3"></td>
+              <td colspan="1"></td>
+              <td colspan="1"></td>
+              <td colspan="3"></td>
+            </tr>
+            <tr>
+              <td colspan="2"></td>
+              <td colspan="3"></td>
+              <td colspan="1"></td>
+              <td colspan="1"></td>
+              <td colspan="3"></td>
+            </tr>
+            <tr>
+              <td colspan="2"></td>
+              <td colspan="3"></td>
+              <td colspan="1"></td>
+              <td colspan="1"></td>
+              <td colspan="3"></td>
+            </tr>
+
+            <!-- 维修记录开始 -->
+            <!-- <tr>
+              <td colspan="10" class="text-center text-bold">维修记录1</td>
+            </tr>
+            <tr>
+              <td colspan="3" class=" bg-th">维修员</td>
+              <td colspan="3" class=" bg-th">维修班组</td>
+              <td colspan="4" class=" bg-th">跟进时间</td>
+            </tr>
+
+            <tr>
+              <td colspan="3">阿柯柯</td>
+              <td colspan="3">弱电班</td>
+              <td colspan="4">2019/9/28</td>
+            </tr>
+
+            <tr class="bg-th">
+              <td colspan="3" class="">维修时间</td>
+              <td colspan="3" class="">维修时长</td>
+              <td colspan="4" class="">维修描述</td>
+            </tr>
+
+            <tr>
+              <td colspan="3">2019/9/28</td>
+              <td colspan="3">1天</td>
+              <td colspan="4">修马桶</td>
+            </tr>
+
+            <tr>
+              <td colspan="3">2019/9/28</td>
+              <td colspan="3">2天</td>
+              <td colspan="4">下水道堵了</td>
+            </tr> -->
+
+            <tr class="bg-th">
+              <td colspan="2">维修情况1</td>
+              <td colspan="2">执行人</td>
+              <td colspan="2">开工时间</td>
+              <td colspan="2">完工时间</td>
+              <td colspan="2">维修时长</td>
+            </tr>
+            <tr>
+              <td colspan="2"></td>
+              <td colspan="2">维修状况</td>
+              <td colspan="2"></td>
+              <td colspan="2">领料单编号：</td>
+              <td colspan="2">仓管员</td>
+            </tr>
+            <tr>
+              <td colspan="2"></td>
+              <td colspan="2">维修备注</td>
+              <td colspan="6"></td>
+            </tr>
+            <tr>
+              <td colspan="2">领单确认</td>
+              <td colspan="2">领单确认时间</td>
+              <td colspan="2"></td>
+              <td colspan="2">领班审批</td>
+              <td colspan="2"></td>
+            </tr>
+
+            <tr>
+              <td colspan="2"></td>
+              <td colspan="2">领班审批意见</td>
+              <td colspan="6"></td>
+            </tr>
+
+            <!-- 维修记录结束 -->
+
+            <tr>
+              <td colspan="2">执行人</td>
+              <td colspan="4">开工日期/时间：</td>
+              <td colspan="4">完工日期/时间：</td>
+            </tr>
+
+            <tr>
+              <td colspan="5">领料单编号：</td>
+              <td colspan="5">仓管：</td>
+            </tr>
+
+
+            <tr>
+              <td colspan="5">班组复核：</td>
+              <td colspan="5">日期：</td>
+            </tr>
+
+            <tr>
+              <td colspan="5">验收/报修人</td>
+              <td colspan="5">工程师/工程经理：</td>
+            </tr>
+
+            <tr>
+              <td style="height: 90px; vertical-align: top;" colspan="10">备注：</td>
+            </tr>
+          </table>
+
+          <div class="process">
+            <p>审批流程：</p>
+            <div class="process_content">
+              <table class="layui-table">
+                <colgroup>
+                  <col width="150">
+                  <col width="200">
+                  <col>
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>工作流节点</th>
+                    <th>处理用户</th>
+                    <th>收到时间</th>
+                    <th>审批时间</th>
+                    <th>处理时长</th>
+                    <th>操作结果</th>
+                    <th>审批意见</th>
+                    <th>评分</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="width: 10%;">发起单据</td>
+                    <td style="width: 20%;">用户</td>
+                    <td style="width: 15%;">时间</td>
+                    <td style="width: 15%;"></td>
+                    <td style="width: 10%;"></td>
+                    <td style="width: 10%;"></td>
+                    <td style="width: 30%;"></td>
+                    <td style="width: 10%;"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </main>
+      </section>
+
+      <!-- <section class="page">
+        <div class="column-container">
+          <p class="info-title">跟进记录1</p>
+          <p class="info-text">
+            <span class="info-label">维修员：</span>
+            麻辣烫
+          </p>
+          <p class="info-text">
+            <span class="info-label">维修班组：</span>
+            强电班
+          </p>
+          <p class="info-text"><span class="info-label">维修时间：</span>2019/08/26</p>
+          <div class="column-container">
+            <p class="info-title">维修记录1-1</p>
+            <p class="info-text"><span class="info-label">维修记录描述：</span>222</p>
+            <p class="info-text"><span class="info-label">维修记录时间：</span>333</p>
+          </div>
+        </div>
+      </section> -->
+      <!--
+      <section class="page">
+        <table width="100%" style="border-collapse: collapse">
+          <tr class="img-part">
+            <td class="img-label">维修附件标题</td>
+          </tr>
+          <tr>
+            <td style="background-image: url('+图片地址+');" class="img-wrp"></td>
+          </tr>
+        </table>
+      </section> -->
+    </div>
+
+    <a class="pdfBtn" @click="getPdf" v-cloak>
+      {{isOk?'导出PDF':'加载中...'}}
+    </a>
+  </div>
+
+
+</body>
+<script type="text/javascript" src="print_js/html2canvas.js"></script>
+<script type="text/javascript" src="print_js/jspdf.min.js"></script>
+<script src="print_js/layui.js"></script>
+<script src="print_js/axios.min.js"></script>
+<script src="print_js/vue.js"></script>
+
+</html>

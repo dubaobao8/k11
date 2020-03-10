@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>采购/报销单</title>
+  <link rel="stylesheet" href="print_css/layui.css" />
+  <link rel="stylesheet" href="print_css/form.css">
+  <style>
+    .content_left {
+      text-align: left !important;
+      font-size: 12px !important;
+    }
+
+    .page {
+      min-height: 1208px;
+      height: auto;
+    }
+
+    .text-center th {
+      text-align: center;
+    }
+
+    #lineTd {
+      background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxsaW5lIHgxPSIwIiB5MT0iMCIgeDI9IjEwMCUiIHkyPSIxMDAlIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjEiLz48L3N2Zz4=) no-repeat 100% center;
+    }
+
+    .underline {
+      text-decoration: underline;
+    }
+
+    .bottom-sign {
+      margin-top: 50px;
+      /*display: flex;*/
+      /*justify-content: flex-end;*/
+      font-size: 16px;
+      /*text-align: right;*/
+      width: 100%;
+    }
+
+    .bottom-sign .sign-item {
+      /*display: inline-block;*/
+      text-align: center;
+      /*margin-left: 10px;*/
+      /*position: absolute;*/
+    }
+
+    .bottom-sign td {
+      width: 25%;
+      padding: 0 6px;
+      font-size: 14px;
+    }
+
+    table.layui-table {
+      color: #000;
+    }
+
+    table.layui-table td {
+      padding: 5px 8px;
+    }
+
+    .page{
+      padding: 1.5rem 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="report">
+    <div id="report-content">
+      <section class="page">
+        <header style="margin-bottom: 10px;">
+          <p class="port_number"></p>
+          <p class="port_number">Ref {{list.purchase_number}}</p>
+          <article class="port_title">广州市新御房地产开发有限公司卓越梦想服务部</article>
+          <p class="port_title">采购/一般费用报销申请表</p>
+          <p class="text-right" style="margin-bottom: 3px;">本表仅适用于非工程类、工程类¥500,000.00元以下总金额采购申请</p>
+        </header>
+        <main>
+          <!-- 采购申请表 -->
+          <section class="order-table">
+            <table class="layui-table">
+              <tr>
+                <td colspan="3">采购/报销主题</td>
+                <td colspan="10">{{list.title}}</td>
+              </tr>
+              <tr>
+                <td colspan="3">{{isPurchase?'采购':'报销'}}用途：</td>
+                <td colspan="10">{{list.purpose}}</td>
+              </tr>
+              <tr>
+                <td colspan="3">申请部门：{{list.application_department}}</td>
+                <td colspan="4">费用扣除部门：{{list.deduction_department}}</td>
+                <td colspan="5">申请日期：{{list.created_at}}</td>
+              </tr>
+
+              <tr>
+                <td colspan="3">预算口径：&nbsp; {{list.budget_caliber}}</td>
+                <td colspan="11">{{isPurchase?'采购':'报销'}}编号：{{list.purchase_number}}</td>
+              </tr>
+
+              <tr>
+                <td :colspan="isPurchase?5:12">预算类型：{{list.budget_type}}</td>
+                <td colspan="7" v-if="isPurchase">采购合同总费用（仅限跨年度合同采购填写）：{{list.year_price}} 元</td>
+              </tr>
+
+              <template v-if="isPurchase">
+                <tr>
+                  <td colspan="6">剩余预算：{{list.budget_surplus}}元</td>
+                  <td colspan="6">采购方式：{{list.procurement_method}}</td>
+                </tr>
+                <tr>
+                  <td colspan="12">承包商及采购商品报价明细：</td>
+                </tr>
+
+                <!-- 采购商品明细及报价开始 -->
+                <tbody class="text-center">
+                  <tr>
+                    <td id="lineTd" rowspan="2" colspan="3" style="width: 5em;">
+                      <span style="float:right;margin-top:0px;">承包商名</span>
+                      <span style="float:left;margin-top:20px;">商品信息</span>
+                    </td>
+
+                    <td colspan="3">承包商1</td>
+                    <td colspan="3">承包商2</td>
+                    <td colspan="3">承包商3</td>
+                  </tr>
+
+                  <tr>
+                    <td colspan="3" style="height: 40px;" v-for="(item,index) in contractor" :key="index">{{item}}</td>
+                  </tr>
+
+                  <tr>
+                    <td style="width: 1em;" colspan="1" :rowspan="goodsList.length+2">采购商品明细及报价</td>
+                    <td colspan="1">品名</td>
+                    <td colspan="1">单位</td>
+                    <td colspan="1" width="12.5%">采购数量</td>
+                    <td colspan="2">报价单价</td>
+                    <td colspan="1" width="12.5%">采购数量</td>
+                    <td colspan="2">报价单价</td>
+                    <td colspan="1" width="12.5%">采购数量</td>
+                    <td colspan="2">报价单价</td>
+                  </tr>
+
+                  <tr v-for="(goods,goods_index) in goodsList" :key="goods_index">
+                    <td :colspan="(index == 3 || index == 5 || index == 7?2:1)" v-for="(item,index) in goods"
+                      :key="index">{{item}}</td>
+                  </tr>
+
+                  <tr>
+                    <td colspan="2">总价</td>
+                    <td colspan="3" class="text-left" v-for="(item,index) in totals" :key="index">
+                      <span style="float: right;" v-if="item">{{item}} 元</span>
+                    </td>
+                  </tr>
+                </tbody>
+                <!-- 采购商品明细及报价结束 -->
+
+                <tr>
+                  <td colspan="12">建议原因</td>
+                </tr>
+                <tr>
+                  <td colspan="12">
+                    <p style="margin-bottom: 5px;">建议采用 <span class="underline"> {{recommend.name}} </span>
+                      承包商，总价为：<span class="underline"> {{recommend.price}} </span> 元，鉴于以下原因：</p>
+                    <p v-for="(item,index) in recommend.reason" :key="index">{{index+1}}. {{item.reason}}</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="12">
+                    修改次数：{{list.update_num}}次
+                  </td>
+                </tr>
+
+              </template>
+
+              <template v-else>
+                <tr>
+                  <!-- <td colspan="4">一般报销费用补充</td>
+                  <td colspan="2">{{list.price.price_purpose}}</td> -->
+                  <td colspan="4">一般报销总费用</td>
+                  <td colspan="8">{{list.pur_price.total_price}}</td>
+                </tr>
+                <tr>
+                  <td colspan="4">部门Budget Code扣减剩余：</td>
+                  <td colspan="8">{{list.budget_surplus}}</td>
+                </tr>
+              </template>
+            </table>
+          </section>
+
+        </main>
+
+
+        <!-- <section class="">
+        <div class="process">
+          <p>审批流程：</p>
+          <div class="process_content">
+            <table class="layui-table">
+              <colgroup>
+                <col width="150">
+                <col width="200">
+                <col>
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>工作流节点</th>
+                  <th>处理用户</th>
+                  <th>收到时间</th>
+                  <th>审批时间</th>
+                  <th>处理时长</th>
+                  <th>操作结果</th>
+                  <th>审批意见</th>
+                  <th>评分</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="width: 10%;">发起单据</td>
+                  <td style="width: 20%;">{{list.pro_user.username}}</td>
+                  <td style="width: 15%;">{{list.created_at}}</td>
+                  <td style="width: 15%;"></td>
+                  <td style="width: 10%;"></td>
+                  <td style="width: 10%;"></td>
+                  <td style="width: 30%;"></td>
+                  <td style="width: 10%;"></td>
+                </tr>
+                <tr v-for="(item,index) in list.operation">
+                  <td>
+                    {{item.action}}
+                  </td>
+                  <td>{{item.user.username}}</td>
+                  <td>{{item.update_time}}</td>
+                  <td>{{item.create_time}}</td>
+                  <td>{{item.time}}</td>
+                  <td>
+                    {{approvalOperation[item.status]}}
+                  </td>
+                  <td class="content_left">{{item.content}}</td>
+                  <td>{{item.star}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section> -->
+
+        <table class="bottom-sign" style="text-align: center">
+          <tr>
+            <td>
+              <div class="sign-item">
+                <p>________________</p>
+                <p>提交日期</p>
+              </div>
+            </td>
+
+            <td>
+              <div class="sign-item">
+                <p>________________</p>
+                <p>申请人签名</p>
+              </div>
+            </td>
+
+            <td>
+              <div class="sign-item">
+                <p>________________</p>
+                <p>申请部门主管签名</p>
+              </div>
+            </td>
+
+            <td>
+              <div class="sign-item">
+                <p>________________</p>
+                <p>SDE负责人签名</p>
+              </div>
+            </td>
+          </tr>
+        </table>
+
+        <table class="bottom-sign" style="text-align: center">
+          <tr>
+            <td></td>
+            <td></td>
+            <td>
+              <div class="sign-item">
+                <p>________________</p>
+                <p>日期</p>
+              </div>
+            </td>
+
+            <td colspan="1">
+              <div class="sign-item">
+                <p>________________</p>
+                <p>日期</p>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </section>
+
+
+      <section class="" style="margin-top: 30px;">
+        <table width="100%" style="border-collapse: collapse">
+          <template v-for="(img,imgIndex) in list.follow">
+            <tr class="img-part">
+              <td class="img-label">{{img.title}}</td>
+            </tr>
+            <tr>
+              <td class="img-wrp" style="text-align: center;">
+                <img :src="img.file_url" style="width: auto;height: auto;max-width: 100%;max-height: 100%;">
+              </td>
+            </tr>
+          </template>
+        </table>
+      </section>
+    </div>
+
+    <a class="pdfBtn" @click="getPdf" v-cloak v-if="isShowPrint">
+      {{isOk?'导出PDF':'加载中...'}}
+    </a>
+  </div>
+
+
+</body>
+<script type="text/javascript" src="print_js/html2canvas.js"></script>
+<script type="text/javascript" src="print_js/jspdf.min.js"></script>
+<script src="print_js/layui.js"></script>
+<script src="print_js/axios.min.js"></script>
+<script src="print_js/vue.js"></script>
+<script>
+  new Vue({
+    el: "#report",
+    data: function () {
+      return {
+        list: {
+          datail: [],
+          pro_user: {},
+          pur_price: {}
+        },
+        isOk: false,
+        goodsList: [[]],
+        contractor: [],
+        totals: [],
+        recommend: {
+          name: "",
+          price: "",
+          reason: []
+        },
+        isShowPrint: true,
+        isPurchase: true,
+        approvalOperation: [null, "同意", "驳回", "转审", "重新申请", "终止", "发起付款单", "付款单终止", "转审批注", "发起撤销申请", "部门主管同意撤销申请", "部门主管拒绝撤销申请"]
+      }
+    },
+    methods: {
+      getUrlParam: function (name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = encodeURI(window.location.search).substr(1).match(reg);
+        if (r != null) {
+          return unescape(r[2]);
+        }
+        return null;
+      },
+      getData: function () {
+        axios({
+          url: "/api/listform/PDFDetail",
+          method: "POST",
+          data: {
+            purchase_id: this.getUrlParam('purchase_id'),
+            // user_id: this.getUrlParam('user_id')
+          }
+        }).then(res => {
+          var data = res.data.data;
+          this.list = data;
+          this.isPurchase = data.type == "1" ? true : false;
+
+          if (this.isPurchase) {
+            var goodsList = [];
+            data.pur_procure[0].data.forEach((goods, goods_index) => {
+              var goodsItem = [];
+              goodsItem.push(goods.product_name);
+              goodsItem.push(goods.unit);
+
+              data.pur_procure.forEach((contractor) => {
+                goodsItem.push(contractor.data[goods_index].number);
+                goodsItem.push(contractor.data[goods_index].price);
+              })
+              goodsItem.length = 8;
+              goodsList.push(goodsItem)
+            })
+
+            this.goodsList = goodsList;
+
+
+            data.pur_procure.forEach(item => {
+              this.contractor.push(item.contractor);
+              this.totals.push(item.total_price);
+              if (item.recommend == "1") {
+                this.recommend.name = item.contractor;
+                this.recommend.price = item.total_price;
+                this.recommend.reason = data.reason;
+              }
+            })
+
+            this.contractor.length = 3;
+            this.totals.length = 3;
+
+            this.list.follow = this.list.follow.filter(item=>item.small_image);
+          }
+        })
+      },
+      getPdf: function () {
+        var port_id = this.getUrlParam("purchase_id");
+        document.getElementsByClassName("pdfBtn")[0].innerText = "";
+        var html = document.getElementsByTagName('html')[0].innerHTML;
+        document.getElementsByClassName("pdfBtn")[0].innerText = "正在导出PDF...";
+        this.isOk = false;
+        axios({
+          url: "/api/report/WorkPdf",
+          method: "POST",
+          data: {
+            id: port_id,
+            html: html
+          }
+        }).then(res => {
+          this.isOk = true;
+          document.getElementsByClassName("pdfBtn")[0].innerText = "导出PDF";
+          var url = res.data.data;
+          // location.href = url;
+          window.open(url);
+        })
+      },
+    },
+    mounted() {
+      this.getData()
+    },
+    created() {
+      if (this.getUrlParam('showPrint') === 'false') {
+        this.isShowPrint = false;
+      }
+      document.onreadystatechange = () => {
+        if (document.readyState == 'complete') {
+          this.isOk = true
+        }
+      }
+    },
+  })
+</script>
+
+</html>

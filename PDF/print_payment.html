@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>采购付款费用申请表</title>
+  <link rel="stylesheet" href="print_css/layui.css" />
+  <link rel="stylesheet" href="print_css/form.css">
+  <style>
+    .layui-table td,
+    .layui-table th {
+      text-align: center;
+      height: 16px;
+      padding: 9px 0px 9px 0px;
+    }
+
+    .content_left {
+      text-align: left !important;
+      font-size: 12px !important;
+    }
+
+    .data_table {
+      width: 100%;
+      /* border: 1px solid #cdcdcd; */
+      border-collapse: collapse;
+
+    }
+
+    table.layui-table {
+      color: #000;
+    }
+
+    table.data_table.layui-table tr td {
+      padding: 9px 5px 9px 10px;
+      /* border: 1px solid #cdcdcd; */
+      height: 16px;
+      text-align: left !important;
+    }
+
+    .bottom-sign {
+      margin-top: 50px;
+      /*display: flex;*/
+      /*justify-content: flex-end;*/
+      font-size: 16px;
+      /*text-align: right;*/
+      width: 100%;
+    }
+
+    .bottom-sign .sign-item {
+      /*display: inline-block;*/
+      text-align: center;
+      /*margin-left: 10px;*/
+      /*position: absolute;*/
+    }
+
+    .bottom-sign td {
+      width: 25%;
+      padding: 0 6px;
+      font-size: 14px;
+    }
+
+    .page {
+      padding: 1.5rem 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="report">
+    <div id="report-content">
+      <section class="page">
+        <header>
+          <p class="port_number"></p>
+          <!-- <p class="port_number">Ref: {{list.work_num}}</p> -->
+          <article class="port_title">K11卓越梦想服务部</article>
+          <p class="port_title">采购付款费用申请表</p>
+        </header>
+        <main style="margin-top: 60px;position: relative; margin-bottom: 500px;">
+          <table class="data_table layui-table" style="text-align: left">
+            <tr>
+              <td colspan="12" style="text-align: left">费用申请部门：{{list.user.department}}</td>
+              <td colspan="12" style="text-align: left">申请人：{{list.user.username}}</td>
+            </tr>
+            <tr>
+              <td colspan="24" style="text-align: left">Budget Code：{{list.purchase.budget_caliber}}</td>
+            </tr>
+            <tr>
+              <td colspan="24" style="text-align: left">费用用途：{{list.purchase.purpose}}</td>
+            </tr>
+
+            <!-- 1. 合同类付款 -->
+            <template v-if="list.purchase.is_contract == 2">
+              <tr>
+                <td colspan="24" class="text-bold" style="text-align: left">1. 合同类付款</td>
+              </tr>
+              <tr>
+                <td colspan="24" style="text-align: left">合同总金额：{{list.procure[0].total_price}}元</td>
+              </tr>
+              <!--<tr>-->
+              <!--  <td colspan="24">占本财年金额：</td>-->
+              <!--</tr>-->
+              <tr>
+                <td colspan="24" class="text-bold" style="text-align: left">本次付款金额：{{list.payment_amount}}元</td>
+              </tr>
+              <!--<tr>-->
+              <!--  <td colspan="24">已付款金额(含本期)：</td>-->
+              <!--</tr>-->
+              <!--<tr>-->
+              <!--  <td colspan="24">余额包含保留金：</td>-->
+              <!--</tr>-->
+              <!--<tr>-->
+              <!--  <td colspan="24">保留金：</td>-->
+              <!--</tr>-->
+            </template>
+            <!-- 2.非合同类付款 -->
+            <template v-if="list.purchase.is_contract == 1">
+              <tr>
+                <td colspan="24" class="text-bold" style="text-align: left">2.非合同类付款</td>
+              </tr>
+              <tr>
+                <td colspan="24" style="text-align: left">总付款金额：{{list.procure[0].total_price}}元</td>
+              </tr>
+              <tr>
+                <td colspan="24" class="text-bold" style="text-align: left">本次付款金额：{{list.payment_amount}}元</td>
+                <!--</tr>-->
+                <!--<tr>-->
+                <!--  <td colspan="24">已付款金额(含本期)</td>-->
+                <!--</tr>-->
+                <!--<tr>-->
+                <!--  <td colspan="24">剩余未付款金额</td>-->
+                <!--</tr>-->
+                <!--<tr>-->
+                <!--  <td colspan="24">备注</td>-->
+                <!--</tr>-->
+            </template>
+
+            <tr>
+              <td colspan="24" style="text-align: left">费用申请表编号：&nbsp; {{list.work_num}}</td>
+              <!--<td colspan="12">是次申请费用金额：</td>-->
+            </tr>
+
+            <tr>
+              <td colspan="24" style="text-align: left">该采购未付金额：{{list.extra_money}}元</td>
+            </tr>
+          </table>
+
+          <table class="bottom-sign" style="text-align: center">
+            <tr>
+              <td>
+                <div class="sign-item">
+                  <p>________________</p>
+                  <p>提交日期</p>
+                </div>
+              </td>
+
+              <td>
+                <div class="sign-item">
+                  <p>________________</p>
+                  <p>申请人签名</p>
+                </div>
+              </td>
+
+              <td>
+                <div class="sign-item">
+                  <p>________________</p>
+                  <p>申请部门主管签名</p>
+                </div>
+              </td>
+
+              <td>
+                <div class="sign-item">
+                  <p>________________</p>
+                  <p>SDE负责人签名</p>
+                </div>
+              </td>
+            </tr>
+          </table>
+
+          <table class="bottom-sign" style="text-align: center">
+            <tr>
+              <td></td>
+              <td></td>
+              <td>
+                <div class="sign-item">
+                  <p>________________</p>
+                  <p>日期</p>
+                </div>
+              </td>
+
+              <td colspan="1">
+                <div class="sign-item">
+                  <p>________________</p>
+                  <p>日期</p>
+                </div>
+              </td>
+            </tr>
+          </table>
+      </section>
+
+      <section class="" style="margin-top: 30px;">
+        <table width="100%" style="border-collapse: collapse">
+          <template v-for="(img,imgIndex) in list.enclosure">
+            <tr class="img-part">
+              <td class="img-label">{{img.title}}</td>
+            </tr>
+            <tr>
+              <td class="img-wrp" style="text-align: center;">
+                <img :src="img.image" style="width: auto;height: auto;max-width: 100%;max-height: auto;">
+              </td>
+            </tr>
+          </template>
+        </table>
+      </section>
+
+      </main>
+
+
+      <!-- <section class="page">
+      <div class="column-container">
+        <p class="info-title">跟进记录1</p>
+        <p class="info-text">
+          <span class="info-label">维修员：</span>
+          麻辣烫
+        </p>
+        <p class="info-text">
+          <span class="info-label">维修班组：</span>
+          强电班
+        </p>
+        <p class="info-text"><span class="info-label">维修时间：</span>2019/08/26</p>
+        <div class="column-container">
+          <p class="info-title">维修记录1-1</p>
+          <p class="info-text"><span class="info-label">维修记录描述：</span>222</p>
+          <p class="info-text"><span class="info-label">维修记录时间：</span>333</p>
+        </div>
+      </div>
+    </section> -->
+      <!--
+    <section class="page">
+      <table width="100%" style="border-collapse: collapse">
+        <tr class="img-part">
+          <td class="img-label">维修附件标题</td>
+        </tr>
+        <tr>
+          <td style="background-image: url('+图片地址+');" class="img-wrp"></td>
+        </tr>
+      </table>
+    </section> -->
+    </div>
+
+    <a class="pdfBtn" @click="getPdf" v-cloak>
+      {{isOk?'导出PDF':'加载中...'}}
+    </a>
+  </div>
+
+
+</body>
+<script type="text/javascript" src="print_js/html2canvas.js"></script>
+<script type="text/javascript" src="print_js/jspdf.min.js"></script>
+<script src="print_js/layui.js"></script>
+<script src="print_js/axios.min.js"></script>
+<script src="print_js/vue.js"></script>
+
+<script>
+  new Vue({
+    el: "#report",
+    data: function () {
+      return {
+        isOk: false,
+        list: {
+          user: {},
+          purchase: {},
+          procure: [{}]
+        }
+      }
+    },
+    methods: {
+      getUrlParam: function (name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = encodeURI(window.location.search).substr(1).match(reg);
+        if (r != null) {
+          return unescape(r[2]);
+        }
+        return null;
+      },
+      getData: function () {
+        axios({
+          url: "/api/ListForm/PayPDFDetail",
+          method: "POST",
+          data: {
+            payment_id: this.getUrlParam('payment_id')
+          }
+        }).then(res => {
+          var data = res.data.data;
+          this.list = data;
+        })
+      },
+      getPdf: function () {
+        var port_id = this.getUrlParam("payment_id");
+        document.getElementsByClassName("pdfBtn")[0].innerText = "";
+        var html = document.getElementsByTagName('html')[0].innerHTML;
+        document.getElementsByClassName("pdfBtn")[0].innerText = "正在导出PDF...";
+        this.isOk = false;
+        axios({
+          url: "/api/form/WorkPdf",
+          method: "POST",
+          data: {
+            id: port_id,
+            html: html
+          }
+        }).then(res => {
+          this.isOk = true;
+          document.getElementsByClassName("pdfBtn")[0].innerText = "导出PDF";
+          var url = res.data.data;
+          // location.href = url;
+          window.open(url);
+        })
+      },
+    },
+    mounted() {
+      this.getData();
+    },
+    created() {
+      document.onreadystatechange = () => {
+        if (document.readyState == 'complete') {
+          this.isOk = true
+        }
+      }
+    }
+  });
+</script>
+
+</html>
