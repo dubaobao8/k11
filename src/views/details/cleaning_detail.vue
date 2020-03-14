@@ -1,6 +1,6 @@
 <template>
   <div>
-    <d-business-card :info="user_info" class="margin20"/>
+    <!-- <d-business-card :info="user_info" class="margin20"/>
     <section class="margin20">
       <p class="fs1-2 fw-b cr-black-blue mb15">任务列表</p>
       <div class="divider-1 mt15 mb15"></div>
@@ -11,9 +11,9 @@
         <d-info-item :value="item.end_time*1000 | transDate" class="mb10" title="结束日期"/>
         <div class="divider-1 mt15 mb15"></div>
       </div>
-    </section>
-    <section class="margin20">
-      <p class="fs1-2 fw-b cr-black-blue">任务安排</p>
+    </section> -->
+    <section >
+      <!-- <p class="fs1-2 fw-b cr-black-blue">任务安排</p> -->
       <v-calendar :setting="info_data.status === 1 && info_data.is_plan === 1"
                   :show-following="info_data.status === 3 && info_data.is_plan === 1"
                   :tasklist="tasklist"
@@ -22,7 +22,7 @@
                   :update="(info_data.status === 2  || info_data.status === 3 )&& info_data.is_work === 1"
                   @submit="onSubmitClean"
                   ref="calendar"
-                  style="margin: 0 -0.6rem;"/>
+                  />
     </section>
 
     <div v-if="canIApproval">
@@ -69,31 +69,32 @@
     methods: {
       getPageData() {
         let port_id = this.$route.params.id;
-        request.post('/api/clean/CleanDetail', {port_id}).then(res => {
+        request.post('/api/clean/TimeTaskList').then(res => {
           let data = res.data.data;
-          this.info_data = data;
-          let info = this.user_info;
-          info.user_name = data.user.username;
-          info.user_avatar = data.user.user_logo;
-          info.report_status = data.status;
-          info.user_id = data.user.userid;
-          info.department = data.user.department;
-          info.position = data.user.position;
+          // this.info_data = data;
+          // let info = this.user_info;
+          // info.user_name = data.user.username;
+          // info.user_avatar = data.user.user_logo;
+          // info.report_status = data.status;
+          // info.user_id = data.user.userid;
+          // info.department = data.user.department;
+          // info.position = data.user.position;
 
           // 生成任务表
-          this.tasklist = data.task.map(item => {
-            return {
-              task_name: item.task_name,
-              clean_type: item.clean_type,
-              clean_content: item.clean_content,
-              task_id: item.id,
-              start_date: moment(item.start_time * 1000).format('YYYY/MM/DD'),
-              end_date: moment(item.end_time * 1000).format('YYYY/MM/DD'),
-              remain_count: 0,
-              exec_count: item.task_num,
-              exec_date: item.plan
-            }
-          });
+          // this.tasklist = data.map(item => {
+          //   return {
+          //     task_name: item.task_name,
+          //     clean_type: item.clean_type,
+          //     clean_content: item.clean_content,
+          //     task_id: item.id,
+          //     start_date: moment(item.start_time * 1000).format('YYYY/MM/DD'),
+          //     end_date: moment(item.end_time * 1000).format('YYYY/MM/DD'),
+          //     remain_count: 0,
+          //     exec_count: item.task_num,
+          //     exec_date: item.plan
+          //   }
+          // });
+          this.tasklist = data
           setTimeout(() => {
             this.$refs.calendar.onResponse();
           }, 100)

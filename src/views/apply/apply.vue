@@ -108,7 +108,6 @@
         }
 
         if (item.selection && item.selection.length) {
-          console.log(item.selection, 555555)
           this.curSelection = item.selection;
           this.isShowSelection = true;
           // this.$refs.select.show();

@@ -133,7 +133,7 @@
           loading.clear();
           this.ex.alert('提示', '发布成功！').then(res => {
             this.$router.replace({
-              path: "/mine",
+              path: "/cleaning_detail",
               query: {
                 tab: 'underway'
               }

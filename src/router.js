@@ -326,7 +326,7 @@ var router = new Router({
         backgroundColor: "#f2f2f2",
       }
     }, {
-      path: "/cleaning_detail/:id",
+      path: "/cleaning_detail",
       name: "cleaning_detail",
       component: () => import('@/views/details/cleaning_detail'),
       meta: {

@@ -1,7 +1,7 @@
 <template>
   <div>
     <section class="full-height">
-      <v-list-reports url="/api/Clean/WorkCleanList"/>
+      <v-list-reports url="/api/Clean/UnPlanTask"/>
     </section>
   </div>
 </template>

@@ -140,7 +140,7 @@ export default [
       },
       {
         name: "清洁日历更新",
-        url: "/cleaning_done"
+        url: "/cleaning_detail"
       }
     ]
   }, {
