@@ -409,6 +409,8 @@ export default {
       this.attachToDate();
     },
     setDate(day) {
+      this.noTaskList = []
+      this.alTaskList = []
       this.select = day;
       if (moment().add("days", 1) <= moment(day)) {
         this.showUpdateBtn = true;
