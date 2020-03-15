@@ -10,7 +10,7 @@
         </div>
       </div>
     </section>
-    <section class="calendar-table">
+    <section class="calendar-table" v-if="!setting || setting2">
       <ul class="calendar-table-head">
         <li :key="week" v-for="week in days">{{week}}</li>
       </ul>
@@ -32,6 +32,27 @@
             :class="{'curdate':isSameDay(current,day.moment)}"
             class="selected2"
             v-if="day.moment._d - new Date()>=0 && day.status ===1"
+          ></span>
+        </li>
+      </ol>
+    </section>
+    <section class="calendar-table" v-if="setting && !setting2">
+      <ul class="calendar-table-head">
+        <li :key="week" v-for="week in days">{{week}}</li>
+      </ul>
+
+      <ol class="calendar-table-body">
+        <li
+          :class="setDayClass2(day)"
+          :key="day.moment.valueOf()"
+          @click="setDate(day.moment)"
+          v-for="(day,day_index) in calendar"
+        >
+          <span class="calendar-day-text">{{day.moment.date()}}</span>
+          <span
+            :class="{'curdate':isSameDay(current,day.moment)}"
+            class="selected"
+            v-if="isSameDay(current,day.moment)"
           ></span>
         </li>
       </ol>
@@ -98,7 +119,7 @@
               <span>当前任务可安排次数：</span>
               <span>{{getTaskCount(task.id)}}</span>
             </p>
-            <p v-if="changeStatus">
+            <p v-if="changeStatus || setting">
               <span>当日次数：</span>
               <v-counter
                 :max="task.task_num"
@@ -109,6 +130,12 @@
           </li>
         </ul>
       </div>
+      <a
+        @click="settingNoTask"
+        class="form-submit-block"
+        style="margin: 30px 10px 0;"
+        v-if="setting && noTaskList.length > 0"
+      >安排任务提交</a>
 
       <!-- 已安排的任务 （当日任务） -->
       <div v-if="isAssignToday">
@@ -130,12 +157,12 @@
               />
             </p>
             <!-- 添加跟进记录 -->
-            <!-- <div class="mt20 follow" v-if="task.plan_id && showFollowing && !isPc()">
+            <div class="mt20 follow" v-if="task.id&&setting&&(task.status === 1||task.status === 4) && !isPc()">
               <p class="fw-b fs09 cr-black-blue">添加跟进记录</p>
               <div class="form-group">
-                <v-input required title="跟进内容" v-model="task.follow_edit.content" />
+                <v-input required title="跟进内容" v-model="task.content" />
                 <v-file-container
-                  :files="task.follow_edit.files"
+                  :files="task.files"
                   :only-camera="true"
                   auto_del
                   auto_upload
@@ -143,7 +170,7 @@
                 />
               </div>
               <a @click="submitFollow(task)" class="form-submit-block" style="margin: 0">提交当日跟进记录</a>
-            </div>-->
+            </div>
 
             <!-- 已添加的跟进记录 -->
             <div class="mt20 follow" v-if="task.follow && task.follow.length">
@@ -155,10 +182,11 @@
                 <v-file-preview :files="item.files" @change:thumb:raw="onFileChange(item,$event)" />
                 <div v-if="ruleStatus === 0&&task.status === 2">
                   <a @click="agreeApproval(task.id)" class="form-submit-block">同意</a>
-                  <a @click="rejectApproval(task.id)" class="form-submit-block form-submit-block__reject">拒绝</a>
+                  <a
+                    @click="rejectApproval(task.id)"
+                    class="form-submit-block form-submit-block__reject"
+                  >拒绝</a>
                 </div>
-
-
 
                 <div v-if="item.curImg && canAddCommment">
                   <label class="add-commemt">
@@ -270,6 +298,10 @@ export default {
       type: Boolean,
       defaule: false
     },
+    setting2: {
+      type: Boolean,
+      defaule: false
+    },
     // 是否可以提交跟进
     showFollowing: {
       type: Boolean,
@@ -311,36 +343,64 @@ export default {
   },
   filter: {},
   methods: {
-     agreeApproval(id) {
-        this.ex.confirm('提示', '确定同意该清洁大做安排？').then(res => {
-          request.post('/api/clean/AgreeCleanTask', {plan_id: id}).then(res => {
-            this.ex.alert('提示', '操作成功！').then(res => {
-              location.reload();
-            })
-          }).catch(e => {
-            this.ex.alert('提示', '操作失败！');
-          })
+    settingNoTask() {
+      this.noTaskList.forEach(element => {
+        (element.clean_id = element.id),
+          (element.plan_time = moment(this.select).format("YYYY/MM/DD"));
+      });
+      let obj = {
+        al_task: [],
+        no_task: this.noTaskList
+      };
+      request
+        .post("/api/clean/CreateTimeTask", obj)
+        .then(res => {
+          this.ex.alert("提示", "提交成功").then(res => {
+            location.reload();
+          });
         })
-      },
-      rejectApproval(id) {
-        this.ex.prompt('提示', '确定拒绝该清洁大做安排？', '请输入理由').then(res => {
+        .catch(e => {
+          this.ex.alert("提示", "提交失败", false);
+        });
+    },
+    agreeApproval(id) {
+      this.ex.confirm("提示", "确定同意该清洁大做安排？").then(res => {
+        request
+          .post("/api/clean/AgreeCleanTask", { plan_id: id })
+          .then(res => {
+            this.ex.alert("提示", "操作成功！").then(res => {
+              location.reload();
+            });
+          })
+          .catch(e => {
+            this.ex.alert("提示", "操作失败！");
+          });
+      });
+    },
+    rejectApproval(id) {
+      this.ex
+        .prompt("提示", "确定拒绝该清洁大做安排？", "请输入理由")
+        .then(res => {
           if (!res) {
-            this.$toast.fail('请输入理由');
+            this.$toast.fail("请输入理由");
             return false;
           }
           let data = {
             plan_id: id,
             content: res
           };
-          request.post('/api/clean/RefuseCleanTask', data).then(res => {
-            this.ex.alert('提示', '操作成功！').then(res => {
-              location.reload();
+          request
+            .post("/api/clean/RefuseCleanTask", data)
+            .then(res => {
+              this.ex.alert("提示", "操作成功！").then(res => {
+                location.reload();
+              });
             })
-          }).catch(e => {
-            this.ex.alert('提示', '操作失败！', false);
-          })
-        })
-      },
+            .catch(e => {
+              this.ex.alert("提示", "操作失败！", false);
+            });
+        });
+    },
     /**
      * @desc 判断选中日是否可以修改清洁任务
      * @return {boolean}
@@ -409,8 +469,8 @@ export default {
       this.attachToDate();
     },
     setDate(day) {
-      this.noTaskList = []
-      this.alTaskList = []
+      this.noTaskList = [];
+      this.alTaskList = [];
       this.select = day;
       if (moment().add("days", 1) <= moment(day)) {
         this.showUpdateBtn = true;
@@ -432,6 +492,7 @@ export default {
         this.alTaskList = data.al_task;
         this.alTaskList.forEach(element => {
           element.selectDate = "";
+          (element.content = ""), (element.files = null);
         });
       });
       // let date;
@@ -484,11 +545,24 @@ export default {
       let stu = date.moment._d - nowDate;
       return {
         "no-selected-month": !date.moment.isSame(this.select, "month"),
-        curdate: this.isSameDay(date.moment, this.current),
+        "curdate": this.isSameDay(date.moment, this.current),
         "tobe-assign": date.status && date.status !== 4 && stu <= 0,
         "tobe-assign-new": date.status && date.status === 4 && stu <= 0,
         "tobe-assign-new2": stu >= 0,
-        assigined: date.assigned
+        "assigined": date.assigned
+      };
+    },
+    setDayClass2(date) {
+      let nowDate = new Date();
+      let stu = date.moment._d - nowDate;
+      return {
+        "no-selected-month": !date.moment.isSame(this.select, "month"),
+        "curdate": this.isSameDay(date.moment, this.current),
+        "tobe-assign": false,
+        "tobe-assign-new": false,
+        "tobe-assign-new2": false,
+        "assigined": false,
+        "border-area": date.status && date.status === 5
       };
     },
     // 比较是否在日期范围内
@@ -584,7 +658,6 @@ export default {
     // 生成日期数组
     taskToDate() {
       let tasklist = this.tasklist;
-
       let dateList = [];
       tasklist.forEach(task => {
         dateList.push(task);
@@ -685,18 +758,25 @@ export default {
     // 提交跟进记录
     submitFollow(task) {
       let data = {
-        plan_id: task.plan_id,
+        plan_id: task.id,
         port_id: this.$route.params.id,
-        ...task.follow_edit
+        ...task
       };
 
-      data.files = data.files.map(file => {
-        return {
-          file_url: file.image,
-          title: file.file_title,
-          small_image: file.small_image
-        };
-      });
+      // data.files = data.files&&data.files.map(file => {
+      //   return {
+      //     file_url: file.image,
+      //     title: file.file_title,
+      //     small_image: file.small_image
+      //   };
+      // });
+      data.files = [
+        {
+          file_url: "123123",
+          title: "42111111111",
+          small_image: ""
+        }
+      ];
 
       let errors = [];
 
@@ -704,15 +784,15 @@ export default {
         errors.push("请填写跟进内容");
       }
 
-      if (!data.files.length) {
-        errors.push("请上传附件");
-      }
+      // if (!data.files&&data.files.length) {
+      //   errors.push("请上传附件");
+      // }
 
-      if (data.files.some(item => !item.title)) {
+      if (data.files && data.files.some(item => !item.title)) {
         errors.push("请把附件标题填写完整");
       }
 
-      if (errors.length) {
+      if (errors && errors.length) {
         this.$toast.fail(errors[0]);
         return false;
       }
@@ -957,6 +1037,9 @@ export default {
   max-height: 60px;
   transform: translate(-50%, -50%);
   z-index: 1;
+}
+.calendar-table-body li.border-area {
+  background-color: #ffff00;
 }
 .calendar-table-body li.tobe-assign-new2::after {
   content: "";

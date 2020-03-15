@@ -80,16 +80,13 @@ export default {
         page: page,
         ...this.extraParams
       });
-      if (res.data.data.list || res.data.data.length >0) {
+      if (res.data.data.list || res.data.data.length > 0) {
         var data = res.data.data;
         return {
           list: data[this.listKey],
           totalPage: data[this.totalKey]
         };
-      } else {
-        this.$router.go(-1);
-        this.$toast.fail(res.data.message);
-      }
+      } 
     },
     //  下拉刷新
     onRefresh() {
@@ -171,7 +168,7 @@ export default {
     // }
   },
   watch: {
-    url() {
+    url(url) {
       this.onRefresh();
     },
     extraParams: {
