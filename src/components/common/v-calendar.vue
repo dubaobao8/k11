@@ -37,7 +37,7 @@
       </ol>
     </section>
     <!-- 图例 -->
-    <section v-if="false">
+    <!-- <section v-if="false">
       <p class="fs08 crbbb ml20 mb10">图例</p>
       <ul class="dpfx calendar-table-body mb20 fxjar">
         <div class="dpfx fxdc fxac mr15 ml15">
@@ -64,44 +64,44 @@
           </li>
           <p class="fs07 cr-grey mt10">已安排</p>
         </div>
-        <!--<div class="dpfx fxdc fxac mr15 ml15">-->
-        <!--  <li class="no-selected-month" style="margin:0">-->
-        <!--    <span class="calendar-day-text">{{current.date()}}</span>-->
-        <!--  </li>-->
-        <!--  <p class="fs07 cr-grey mt10">非本月</p>-->
-        <!--</div>-->
       </ul>
-    </section>
+    </section>-->
 
     <!-- 任务 -->
     <section class="cr3" v-if="!modify">
       <!-- 待安排的任务 （当日待安排的任务） -->
-      <div v-if="setting || (update  && CanBeUpdate())">
+      <!-- <div v-if="setting || (update  && CanBeUpdate())"> -->
+      <!-- <div v-if="CanBeUpdate()"> -->
+      <div>
         <p
           class="ml5 mr5 mt15 fw-b fs1-04"
           style="color: #484952;"
-          v-if="cur_calendar.tobelist&&cur_calendar.tobelist.length"
+          v-if="noTaskList&&noTaskList.length"
         >当日待安排的任务</p>
         <ul>
           <li
-            :key="task.task_id + select.valueOf()"
+            :key="task.id"
             class="task-box ml5 mr5 mt15 fs08"
-            v-for="(task,task_index) in cur_calendar.tobelist"
+            v-for="(task,task_index) in noTaskList"
           >
             <p class="mb15">
               <span>任务名称：</span>
               <span>{{task.task_name}}</span>
             </p>
+            <p class="mb15">
+              <span>发布人：</span>
+              <span>{{task.username}}</span>
+            </p>
             <p class="mb15">工作类型：{{task.clean_type}}</p>
             <p class="mb15">工作内容：{{task.clean_content}}</p>
             <p class="mb10">
               <span>当前任务可安排次数：</span>
-              <span>{{getTaskCount(task.task_id)}}</span>
+              <span>{{getTaskCount(task.id)}}</span>
             </p>
-            <p>
+            <p v-if="changeStatus">
               <span>当日次数：</span>
               <v-counter
-                :max="getTaskCount(task.task_id) + task.count"
+                :max="task.task_num"
                 :value="task.count"
                 @change="onSetCount(task,$event)"
               />
@@ -111,23 +111,26 @@
       </div>
 
       <!-- 已安排的任务 （当日任务） -->
-      <div v-if="isAssignToday && !setting">
+      <div v-if="isAssignToday">
         <p class="ml5 mr5 mt15 fw-b fs1-04" style="color: #484952;">当日已安排的任务</p>
         <ul>
-          <li
-            :key="task.task_id + select.valueOf()"
-            class="task-box ml5 mr5 mt15 cr3 fs08"
-            v-for="task in cur_calendar.tobelist"
-            v-if="task.count>0"
-          >
-            <p class="mb10">任务名称：{{task.task_name}}</p>
-            <p class="mb10">工作类型：{{task.clean_type}}</p>
-            <p class="mb10">工作内容：{{task.clean_content}}</p>
+          <li :key="task.id" class="task-box ml5 mr5 mt15 cr3 fs08" v-for="task in alTaskList">
+            <p class="mb10">任务名称：{{task.task.task_name}} (待跟进)</p>
+            <p class="mb10">发布人：{{task.task.user.username}}</p>
+            <p class="mb10">工作类型：{{task.task.clean_type}}</p>
+            <p class="mb10">工作内容：{{task.task.clean_content}}</p>
             <p>
-              <span>当日安排次数：{{task.count}}</span>
+              <span>当日安排次数：{{task.task.task_num}}</span>
+            </p>
+            <p class="mt15" v-if="changeStatus">
+              <v-picker
+                title="修改日期"
+                type="datetime"
+                @select:allData="(date)=>{selectDateTime(date,task)}"
+              />
             </p>
             <!-- 添加跟进记录 -->
-            <div class="mt20 follow" v-if="task.plan_id && showFollowing && !isPc()">
+            <!-- <div class="mt20 follow" v-if="task.plan_id && showFollowing && !isPc()">
               <p class="fw-b fs09 cr-black-blue">添加跟进记录</p>
               <div class="form-group">
                 <v-input required title="跟进内容" v-model="task.follow_edit.content" />
@@ -140,7 +143,7 @@
                 />
               </div>
               <a @click="submitFollow(task)" class="form-submit-block" style="margin: 0">提交当日跟进记录</a>
-            </div>
+            </div>-->
 
             <!-- 已添加的跟进记录 -->
             <div class="mt20 follow" v-if="task.follow && task.follow.length">
@@ -150,6 +153,12 @@
                 <d-info-item :value="item.content" class="mt15" title="跟进内容" />
                 <d-info-item class="mt10" title="附件" v-if="item.files&&item.files.length" />
                 <v-file-preview :files="item.files" @change:thumb:raw="onFileChange(item,$event)" />
+                <div v-if="ruleStatus === 0&&task.status === 2">
+                  <a @click="agreeApproval(task.id)" class="form-submit-block">同意</a>
+                  <a @click="rejectApproval(task.id)" class="form-submit-block form-submit-block__reject">拒绝</a>
+                </div>
+
+
 
                 <div v-if="item.curImg && canAddCommment">
                   <label class="add-commemt">
@@ -211,20 +220,20 @@
       <div class="form-submit-block" @click="onMofifySumit">提交当日修改</div>
     </div>
 
-    <!-- 提交清洁大做 -->
-    <a
-      @click="$emit('submit')"
-      class="form-submit-block"
-      style="margin: 30px 10px 0;"
-      v-if="setting"
-    >提交清洁大做</a>
     <!-- 修改清洁大做 -->
     <a
-      @click="$emit('submit')"
+      @click="chageUpdateChangeStatus"
       class="form-submit-block"
       style="margin: 30px 10px 0;background-color:rgb(0,183,195);"
-      v-if="update"
+      v-if="ruleStatus === 0&& showUpdateBtn && (noTaskList.length>0||alTaskList.length>0)"
     >修改清洁大做</a>
+    <!-- 提交清洁大做 -->
+    <a
+      @click="submitCleanUpdate"
+      class="form-submit-block"
+      style="margin: 30px 10px 0;"
+      v-if="ruleStatus === 0&& submitStatus"
+    >提交清洁大做</a>
   </div>
 </template>
 
@@ -240,6 +249,7 @@ import _ from "lodash";
 import { isPc } from "@/util/util";
 import VDetailTitle from "@/components/form/v-detail-title";
 import ActionLine from "@/components/form/action-line";
+import VPicker from "@/components/form/v-picker";
 
 export default {
   name: "v-calendar",
@@ -250,7 +260,8 @@ export default {
     DInfoItem,
     VFileContainer,
     VInput,
-    VCounter
+    VCounter,
+    VPicker
   },
   props: {
     tasklist: null,
@@ -286,6 +297,12 @@ export default {
       dateList: [],
       select: moment(),
       current: moment(),
+      noTaskList: [],
+      alTaskList: [],
+      ruleStatus: null,
+      changeStatus: false,
+      submitStatus: false,
+      showUpdateBtn: false,
       cur_calendar: {},
       cur_modify: {
         tobelist: []
@@ -294,6 +311,36 @@ export default {
   },
   filter: {},
   methods: {
+     agreeApproval(id) {
+        this.ex.confirm('提示', '确定同意该清洁大做安排？').then(res => {
+          request.post('/api/clean/AgreeCleanTask', {plan_id: id}).then(res => {
+            this.ex.alert('提示', '操作成功！').then(res => {
+              location.reload();
+            })
+          }).catch(e => {
+            this.ex.alert('提示', '操作失败！');
+          })
+        })
+      },
+      rejectApproval(id) {
+        this.ex.prompt('提示', '确定拒绝该清洁大做安排？', '请输入理由').then(res => {
+          if (!res) {
+            this.$toast.fail('请输入理由');
+            return false;
+          }
+          let data = {
+            plan_id: id,
+            content: res
+          };
+          request.post('/api/clean/RefuseCleanTask', data).then(res => {
+            this.ex.alert('提示', '操作成功！').then(res => {
+              location.reload();
+            })
+          }).catch(e => {
+            this.ex.alert('提示', '操作失败！', false);
+          })
+        })
+      },
     /**
      * @desc 判断选中日是否可以修改清洁任务
      * @return {boolean}
@@ -301,6 +348,36 @@ export default {
     CanBeUpdate() {
       let deadline = this.select.clone().startOf("days");
       return moment().isBefore(deadline);
+    },
+    chageUpdateChangeStatus() {
+      this.changeStatus = true;
+      this.submitStatus = true;
+    },
+    selectDateTime(date, task) {
+      task.selectDate = moment(date.date).format("YYYY/MM/DD");
+    },
+
+    submitCleanUpdate() {
+      let list1 = [];
+      this.alTaskList.forEach(ele => {
+        ele.plan_id = ele.id;
+        ele.clean_id = ele.task.id;
+        ele.count = ele.task.count;
+        ele.update_time = ele.selectDate;
+        list1.push(ele);
+      });
+      let list2 = [];
+      this.noTaskList.forEach(ele => {
+        ele.clean_id = ele.id;
+        ele.count = ele.count;
+        ele.plan_time = moment(this.select).format("YYYY/MM/DD");
+        list2.push(ele);
+      });
+      let obj = {
+        al_task: list1,
+        no_task: list2
+      };
+      this.$emit("submit", obj);
     },
     setCalendar(targetMoment) {
       let firstDate;
@@ -332,41 +409,62 @@ export default {
       this.attachToDate();
     },
     setDate(day) {
-      let date;
-      if (!arguments.length) {
-        date = moment();
+      this.select = day;
+      if (moment().add("days", 1) <= moment(day)) {
+        this.showUpdateBtn = true;
       } else {
-        date = day;
+        this.showUpdateBtn = false;
       }
-
-      let old = this.select.clone();
-
-      this.select = date;
-
-      if (!old.isSame(this.select, "month")) {
-        this.setCalendar(date);
-      }
-
-      this.cur_calendar = this.calendar.find(item =>
-        this.isSameDay(this.select, item.moment)
-      );
-      this.cur_modify = _.cloneDeep(this.cur_calendar);
-
-      this.cur_modify.tobelist.forEach(task => {
-        task.follow &&
-          task.follow.forEach(follow => {
-            follow.files &&
-              follow.files.forEach(item => {
-                item.file_img = item.file_url;
-                item.image = item.file_img;
-                item.file_desc = "已上传";
-                item.file_img = item.file_url;
-                item.file_name = item.title;
-                item.file_title = item.title;
-                item.need_reupload = false;
-              });
-          });
+      let param = moment(day).format("YYYY/MM/DD");
+      request.post("/api/clean/CleanDetail", { date: param }).then(res => {
+        let data = res.data.data;
+        if (data.is_work === 1) {
+          this.ruleStatus = 0;
+        } else if (data.is_plan === 0) {
+          this.ruleStatus = 1;
+        }
+        this.noTaskList = data.no_task;
+        this.noTaskList.forEach(element => {
+          element.count = 0;
+        });
+        this.alTaskList = data.al_task;
+        this.alTaskList.forEach(element => {
+          element.selectDate = "";
+        });
       });
+      // let date;
+      // if (!arguments.length) {
+      //   date = moment();
+      // } else {
+      //   date = day;
+      // }
+
+      // let old = this.select.clone();
+
+      // if (!old.isSame(this.select, "month")) {
+      //   this.setCalendar(date);
+      // }
+
+      // this.cur_calendar = this.calendar.find(item =>
+      //   this.isSameDay(this.select, item.moment)
+      // );
+      // this.cur_modify = _.cloneDeep(this.cur_calendar);
+
+      // this.cur_modify.tobelist.forEach(task => {
+      //   task.follow &&7
+      //     task.follow.forEach(follow => {
+      //       follow.files &&
+      //         follow.files.forEach(item => {
+      //           item.file_img = item.file_url;
+      //           item.image = item.file_img;
+      //           item.file_desc = "已上传";
+      //           item.file_img = item.file_url;
+      //           item.file_name = item.title;
+      //           item.file_title = item.title;
+      //           item.need_reupload = false;
+      //         });
+      //     });
+      // });
     },
     prevMonth() {
       let date = this.select.clone().subtract(1, "month");
@@ -419,42 +517,50 @@ export default {
     },
     // 获取当前任务的剩余次数
     getTaskCount(id) {
-      return this.tasklist.find(item => item.task_id === id).remain_count;
+      return this.noTaskList.find(item => item.id === id).task_num;
     },
     // 设置安排任务
     onSetCount(calendar_task, count) {
-      let id = calendar_task.task_id;
-
-      let task = this.tasklist.find(item => item.task_id === id);
+      let id = calendar_task.id;
+      let task = this.noTaskList.find(item => item.id === id);
       if (!task) {
         return false;
       }
-
-      if (count > 0) {
-        let execItem = task.exec_date.find(item =>
-          this.isSameDay(moment(item.date, "YYYY/MM/DD"), this.select)
-        );
-        if (execItem) {
-          execItem.count = count;
-        } else {
-          task.exec_date.push({
-            date: this.select.format("YYYY/MM/DD"),
-            count: count
-          });
-        }
+      if (task.task_num > 0) {
+        task.task_num = task.task_num - count;
+        task.count = task.task_num + count;
       } else {
-        let execIndex = task.exec_date.findIndex(item =>
-          this.isSameDay(moment(item.date, "YYYY/MM/DD"), this.select)
-        );
-        task.exec_date.splice(execIndex, 1);
+        task.task_num = task.task_num + 1;
+        task.count = task.task_num - 1;
       }
+      // task.count = 1
+      // console.log(this.noTaskList, "this.noTaskList")
 
-      calendar_task.count = count;
-      this.cur_calendar.assigned = this.cur_calendar.tobelist.some(
-        item => item.count > 0
-      );
-      this.calcTaskCount(calendar_task.task_id);
-      this.attachToDate();
+      // if (count > 0) {
+      //   let execItem = task.date.find(item =>
+      //     this.isSameDay(moment(item.date, "YYYY/MM/DD"), this.select)
+      //   );
+      //   if (execItem) {
+      //     execItem.count = count;
+      //   } else {
+      //     task.date.push({
+      //       date: this.select.format("YYYY/MM/DD"),
+      //       count: count
+      //     });
+      //   }
+      // } else {
+      //   let execIndex = task.date.findIndex(item =>
+      //     this.isSameDay(moment(item.date, "YYYY/MM/DD"), this.select)
+      //   );
+      //   task.date.splice(execIndex, 1);
+      // }
+
+      // calendar_task.count = count;
+      // this.cur_calendar.assigned = this.cur_calendar.tobelist.some(
+      //   item => item.count > 0
+      // );
+      // this.calcTaskCount(calendar_task.task_id);
+      // this.attachToDate();
     },
 
     // 把日历数组的数据放到日历上去
@@ -732,8 +838,7 @@ export default {
   computed: {
     isAssignToday() {
       return (
-        this.cur_calendar.tobelist &&
-        this.cur_calendar.tobelist.some(item => item.count > 0)
+        this.alTaskList && this.alTaskList.some(item => item.task.task_num > 0)
       );
     }
   }

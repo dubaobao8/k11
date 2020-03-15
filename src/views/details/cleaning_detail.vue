@@ -90,7 +90,7 @@
           //     start_date: moment(item.start_time * 1000).format('YYYY/MM/DD'),
           //     end_date: moment(item.end_time * 1000).format('YYYY/MM/DD'),
           //     remain_count: 0,
-          //     exec_count: item.task_num,
+          //     exec_count: item.task_num,submit
           //     exec_date: item.plan
           //   }
           // });
@@ -101,27 +101,27 @@
 
         });
       },
-      onSubmitClean() {
-        let tasklist = this.tasklist;
-        let error = "";
-        let inComplete = tasklist.some(item => {
-          if (item.remain_count) {
-            error = `【${item.task_name}】未安排完整`;
-            return true
-          }
-        });
+      onSubmitClean(obj) {
+        // let tasklist = this.tasklist;
+        // let error = "";
+        // let inComplete = tasklist.some(item => {
+        //   if (item.remain_count) {
+        //     error = `【${item.task_name}】未安排完整`;
+        //     return true
+        //   }
+        // });
 
-        if (inComplete) {
-          this.$notify(error);
-          return false
-        }
+        // if (inComplete) {
+        //   this.$notify(error);
+        //   return false
+        // }
 
-        let data = {
-          port_id: this.port_id,
-          taskList: tasklist
-        };
+        // let data = {
+        //   port_id: this.port_id,
+        //   taskList: tasklist
+        // };
 
-        request.post('/api/clean/CreateTimeTask', data).then(res => {
+        request.post('/api/clean/CreateTimeTask', obj).then(res => {
           this.ex.alert('提示', '提交成功').then(res => {
             location.reload();
           })
