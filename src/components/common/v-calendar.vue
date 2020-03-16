@@ -142,7 +142,7 @@
         <p class="ml5 mr5 mt15 fw-b fs1-04" style="color: #484952;">当日已安排的任务</p>
         <ul>
           <li :key="task.id" class="task-box ml5 mr5 mt15 cr3 fs08" v-for="task in alTaskList">
-            <p class="mb10">任务名称：{{task.task.task_name}} (待跟进)</p>
+            <p class="mb10">任务名称：{{task.task.task_name}} (<span :class="setDayClass3(task.status)">{{task.status_name}}</span>)</p>
             <p class="mb10">发布人：{{task.task.user.username}}</p>
             <p class="mb10">工作类型：{{task.task.clean_type}}</p>
             <p class="mb10">工作内容：{{task.task.clean_content}}</p>
@@ -565,6 +565,14 @@ export default {
         "border-area": date.status && date.status === 5
       };
     },
+    setDayClass3(status) {
+      return {
+        "font-size1":status === 2,
+        "font-size2":status === 1,
+        "font-size3":status === 4,
+        "font-size4":status === 3
+      }
+    },
     // 比较是否在日期范围内
     isWithinRange(startmoment, endmoment, moment) {
       return moment.isBetween(
@@ -659,7 +667,7 @@ export default {
     taskToDate() {
       let tasklist = this.tasklist;
       let dateList = [];
-      tasklist.forEach(task => {
+      tasklist&&tasklist.forEach(task => {
         dateList.push(task);
         // // 已安排的任务
         // let taskItem = {
@@ -920,7 +928,7 @@ export default {
   computed: {
     isAssignToday() {
       return (
-        this.alTaskList && this.alTaskList.some(item => item.task.task_num > 0)
+        this.alTaskList && this.alTaskList.some(item => item.task&&item.task.task_num > 0)
       );
     }
   }
@@ -928,6 +936,18 @@ export default {
 </script>
 
 <style scoped>
+.font-size1 {
+  color: #1E90FF;
+}
+.font-size2 {
+  color: #00FFFF;
+}
+.font-size3 {
+  color: #DC143C;
+}
+.font-size4 {
+  color: #32CD32;
+}
 .calendar-wrp {
   background-color: #fff;
   padding-bottom: 0.45rem;

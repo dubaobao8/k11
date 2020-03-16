@@ -238,7 +238,11 @@ export default {
       this.getPageData();
     } else {
       this.setting = true;
-      this.tasklist = res.data.data.task_list;
+      if(btnStatus === "2") {
+        this.tasklist = res.data.data.task_list;
+      } else {
+        this.getPageData();
+      }
       setTimeout(() => {
         this.$refs.calendar.onResponse();
       }, 100);
