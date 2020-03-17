@@ -552,11 +552,11 @@ export default {
       let stu = date.moment._d - nowDate;
       return {
         "no-selected-month": !date.moment.isSame(this.select, "month"),
-        curdate: this.isSameDay(date.moment, this.current),
+        "curdate": this.isSameDay(date.moment, this.current),
         "tobe-assign": date.status && date.status !== 4 && stu <= 0,
         "tobe-assign-new": date.status && date.status === 4 && stu <= 0,
         "tobe-assign-new2": stu >= 0,
-        assigined: date.assigned
+        "assigined": date.assigned
       };
     },
     setDayClass2(date) {
@@ -564,11 +564,11 @@ export default {
       let stu = date.moment._d - nowDate;
       return {
         "no-selected-month": !date.moment.isSame(this.select, "month"),
-        curdate: this.isSameDay(date.moment, this.current),
+        "curdate": this.isSameDay(date.moment, this.current),
         "tobe-assign": false,
         "tobe-assign-new": false,
         "tobe-assign-new2": false,
-        assigined: false,
+        "assigined": false,
         "border-area": date.status && date.status === 5
       };
     },
