@@ -135,9 +135,9 @@
       // 日期起始
       dateStart: {
         type: null,
-        // default() {
-        //   return new Date(2010, 1, 1)
-        // }
+        default() {
+          return new Date()
+        }
       },
       // 日期截至
       dateEnd: {
