@@ -143,8 +143,8 @@
         <ul>
           <li :key="task.id" class="task-box ml5 mr5 mt15 cr3 fs08" v-for="task in alTaskList">
             <p class="mb10">
-              任务名称：{{task.task.task_name}} (
-              <span :class="setDayClass3(task.status)">{{task.status_name}}</span>)
+              任务名称：{{task.task.task_name}} 
+              <span :class="setDayClass3(task.status)">{{task.status_name}}</span>
             </p>
             <p class="mb10">发布人：{{task.task.user.username}}</p>
             <p class="mb10">工作类型：{{task.task.clean_type}}</p>
@@ -162,7 +162,7 @@
             <!-- 添加跟进记录 -->
             <div
               class="mt20 follow"
-              v-if="task.id&&setting&&(task.status === 1||task.status === 4) && !isPc()"
+              v-if="task.id&&setting&&(task.status === 1||task.status === 4) && !isPc()&&submitBtnStatus"
             >
               <p class="fw-b fs09 cr-black-blue">添加跟进记录</p>
               <div class="form-group">
@@ -344,7 +344,8 @@ export default {
       cur_calendar: {},
       cur_modify: {
         tobelist: []
-      }
+      },
+      submitBtnStatus:false
     };
   },
   filter: {},
@@ -478,6 +479,7 @@ export default {
       this.noTaskList = [];
       this.alTaskList = [];
       this.select = day;
+      this.submitBtnStatus = day._d <= new Date()
       if (moment().add("days", 1) <= moment(day)) {
         this.showUpdateBtn = true;
       } else {
@@ -499,7 +501,8 @@ export default {
         this.alTaskList = data.al_task;
         this.alTaskList.forEach(element => {
           element.selectDate = "";
-          (element.content = ""), (element.files = null);
+          element.content = "";
+          element.files = null
         });
       });
       // let date;
@@ -786,14 +789,13 @@ export default {
         port_id: this.$route.params.id,
         ...task
       };
-
-      // data.files = data.files&&data.files.map(file => {
-      //   return {
-      //     file_url: file.image,
-      //     title: file.file_title,
-      //     small_image: file.small_image
-      //   };
-      // });
+      data.files = data.files&&data.files.map(file => {
+        return {
+          file_url: file.image,
+          title: file.file_title,
+          small_image: file.small_image
+        };
+      });
       data.files = [
         {
           file_url: "123123",
@@ -808,9 +810,9 @@ export default {
         errors.push("请填写跟进内容");
       }
 
-      // if (!data.files&&data.files.length) {
-      //   errors.push("请上传附件");
-      // }
+      if (!data.files&&data.files.length) {
+        errors.push("请上传附件");
+      }
 
       if (data.files && data.files.some(item => !item.title)) {
         errors.push("请把附件标题填写完整");
@@ -940,7 +942,6 @@ export default {
     }
   },
   watch: {},
-  mounted() {},
   computed: {
     isAssignToday() {
       return (
@@ -954,15 +955,31 @@ export default {
 
 <style scoped>
 .font-size1 {
+  padding: 2px;
+  border-radius: 2px;
+  border: solid 1px #1e90ff;
+  margin-left: 5px;
   color: #1e90ff;
 }
 .font-size2 {
+  padding: 2px;
+  border-radius: 2px;
+  border: solid 1px #00ffff;
+  margin-left: 5px;
   color: #00ffff;
 }
 .font-size3 {
+  padding: 2px;
+  border-radius: 2px;
+  border: solid 1px #dc143c;
+  margin-left: 5px;
   color: #dc143c;
 }
 .font-size4 {
+  padding: 2px;
+  border-radius: 2px;
+  border: solid 1px #32cd32;
+  margin-left: 5px;
   color: #32cd32;
 }
 .calendar-wrp {
