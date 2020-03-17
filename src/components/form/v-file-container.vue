@@ -134,12 +134,12 @@
         fileItem.file_desc = "正在上传...";
         fileItem.need_reupload = false;
         request.post(this.action, formData).then(res => {
-
           var data = res.data.data;
           fileItem.image = data.image;
           fileItem.small_image = data.small_image;
           fileItem.file_desc = "已上传";
           fileItem.id = ""
+          this.$emit('push:updateSuccess', true);
         }).catch(err => {
           fileItem.file_desc = "上传失败，请";
           fileItem.need_reupload = true;

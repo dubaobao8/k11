@@ -171,8 +171,11 @@
                   :files="task.files"
                   :only-camera="true"
                   auto_del
-                  auto_upload
+                  auto_upload 
                   required
+                  @push:file="updateView"
+                  @push:updateSuccess="updateSuccess"
+                  @del:file="deleteFile"
                 />
               </div>
               <a @click="submitFollow(task)" class="form-submit-block" style="margin: 0">提交当日跟进记录</a>
@@ -350,6 +353,15 @@ export default {
   },
   filter: {},
   methods: {
+    updateView() {
+      this.$forceUpdate();
+    },
+    updateSuccess(){
+      this.$forceUpdate();
+    },
+    deleteFile() {
+      this.$forceUpdate();
+    },
     settingNoTask() {
       this.noTaskList.forEach(element => {
         (element.clean_id = element.id),
@@ -502,7 +514,7 @@ export default {
         this.alTaskList.forEach(element => {
           element.selectDate = "";
           element.content = "";
-          element.files = null
+          element.files = []
         });
       });
       // let date;
@@ -556,8 +568,8 @@ export default {
       return {
         "no-selected-month": !date.moment.isSame(this.select, "month"),
         "curdate": this.isSameDay(date.moment, this.current),
-        "tobe-assign": date.status && date.status !== 4 && stu <= 0,
-        "tobe-assign-new": date.status && date.status === 4 && stu <= 0,
+        "tobe-assign": date.status && date.status !== 3 && stu <= 0,
+        "tobe-assign-new": date.status && date.status === 3 && stu <= 0,
         "tobe-assign-new2": stu >= 0,
         "assigined": date.assigned
       };
@@ -796,14 +808,6 @@ export default {
           small_image: file.small_image
         };
       });
-      data.files = [
-        {
-          file_url: "123123",
-          title: "42111111111",
-          small_image: ""
-        }
-      ];
-
       let errors = [];
 
       if (!data.content) {
