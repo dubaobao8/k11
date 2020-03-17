@@ -117,7 +117,7 @@
             <p class="mb15">工作内容：{{task.clean_content}}</p>
             <p class="mb10">
               <span>当前任务可安排次数：</span>
-              <span>{{getTaskCount(task.id)}}</span>
+              <span>{{task.totalCount}}</span>
             </p>
             <p v-if="changeStatus || setting">
               <span>当日次数：</span>
@@ -142,7 +142,10 @@
         <p class="ml5 mr5 mt15 fw-b fs1-04" style="color: #484952;">当日已安排的任务</p>
         <ul>
           <li :key="task.id" class="task-box ml5 mr5 mt15 cr3 fs08" v-for="task in alTaskList">
-            <p class="mb10">任务名称：{{task.task.task_name}} (<span :class="setDayClass3(task.status)">{{task.status_name}}</span>)</p>
+            <p class="mb10">
+              任务名称：{{task.task.task_name}} (
+              <span :class="setDayClass3(task.status)">{{task.status_name}}</span>)
+            </p>
             <p class="mb10">发布人：{{task.task.user.username}}</p>
             <p class="mb10">工作类型：{{task.task.clean_type}}</p>
             <p class="mb10">工作内容：{{task.task.clean_content}}</p>
@@ -157,7 +160,10 @@
               />
             </p>
             <!-- 添加跟进记录 -->
-            <div class="mt20 follow" v-if="task.id&&setting&&(task.status === 1||task.status === 4) && !isPc()">
+            <div
+              class="mt20 follow"
+              v-if="task.id&&setting&&(task.status === 1||task.status === 4) && !isPc()"
+            >
               <p class="fw-b fs09 cr-black-blue">添加跟进记录</p>
               <div class="form-group">
                 <v-input required title="跟进内容" v-model="task.content" />
@@ -488,6 +494,7 @@ export default {
         this.noTaskList = data.no_task;
         this.noTaskList.forEach(element => {
           element.count = 0;
+          element.totalCount = element.task_num;
         });
         this.alTaskList = data.al_task;
         this.alTaskList.forEach(element => {
@@ -545,11 +552,11 @@ export default {
       let stu = date.moment._d - nowDate;
       return {
         "no-selected-month": !date.moment.isSame(this.select, "month"),
-        "curdate": this.isSameDay(date.moment, this.current),
+        curdate: this.isSameDay(date.moment, this.current),
         "tobe-assign": date.status && date.status !== 4 && stu <= 0,
         "tobe-assign-new": date.status && date.status === 4 && stu <= 0,
         "tobe-assign-new2": stu >= 0,
-        "assigined": date.assigned
+        assigined: date.assigned
       };
     },
     setDayClass2(date) {
@@ -557,21 +564,21 @@ export default {
       let stu = date.moment._d - nowDate;
       return {
         "no-selected-month": !date.moment.isSame(this.select, "month"),
-        "curdate": this.isSameDay(date.moment, this.current),
+        curdate: this.isSameDay(date.moment, this.current),
         "tobe-assign": false,
         "tobe-assign-new": false,
         "tobe-assign-new2": false,
-        "assigined": false,
+        assigined: false,
         "border-area": date.status && date.status === 5
       };
     },
     setDayClass3(status) {
       return {
-        "font-size1":status === 2,
-        "font-size2":status === 1,
-        "font-size3":status === 4,
-        "font-size4":status === 3
-      }
+        "font-size1": status === 2,
+        "font-size2": status === 1,
+        "font-size3": status === 4,
+        "font-size4": status === 3
+      };
     },
     // 比较是否在日期范围内
     isWithinRange(startmoment, endmoment, moment) {
@@ -610,13 +617,21 @@ export default {
       if (!task) {
         return false;
       }
-      if (task.task_num > 0) {
-        task.task_num = task.task_num - count;
-        task.count = task.task_num + count;
-      } else {
-        task.task_num = task.task_num + 1;
-        task.count = task.task_num - 1;
-      }
+      task.totalCount = task.task_num - count;
+      task.count = count
+      this.noTaskList.forEach((ele, index) => {
+        if ((ele.id == id)) {
+          this.noTaskList.splice(index,1,task)
+        }
+      });
+      
+      // this.noTaskList = []
+      // this.noTaskList.push(task)
+      // task.count = task.task_num + count;
+      // } else {
+      // task.task_num = task.task_num + 1;
+      // task.count = task.task_num - 1;
+      // }
       // task.count = 1
       // console.log(this.noTaskList, "this.noTaskList")
 
@@ -667,93 +682,94 @@ export default {
     taskToDate() {
       let tasklist = this.tasklist;
       let dateList = [];
-      tasklist&&tasklist.forEach(task => {
-        dateList.push(task);
-        // // 已安排的任务
-        // let taskItem = {
-        //   task_name: task.task_name,
-        //   clean_type: task.clean_type,
-        //   clean_content: task.clean_content,
-        //   task_id: task.task_id,
-        //   exec_count: task.exec_count,
-        //   remain_count: task.remain_count,
-        // };
-        // task.exec_date.forEach(exec_date => {
-        //   let dateObj = dateList.find(item => item.date === exec_date.date);
-        //   let todoItem = {count: exec_date.count, ...taskItem};
-        //   let follow = exec_date.follow;
-        //   if (!dateObj) {
-        //     dateObj = {
-        //       date: exec_date.date,
-        //       tobelist: [],
-        //     };
-        //     // follow.curImg = follow.files[0];
-        //     // follow.forEach(item => {
-        //     //   item.files = JSON.parse(item.files);
-        //     // });
+      tasklist &&
+        tasklist.forEach(task => {
+          dateList.push(task);
+          // // 已安排的任务
+          // let taskItem = {
+          //   task_name: task.task_name,
+          //   clean_type: task.clean_type,
+          //   clean_content: task.clean_content,
+          //   task_id: task.task_id,
+          //   exec_count: task.exec_count,
+          //   remain_count: task.remain_count,
+          // };
+          // task.exec_date.forEach(exec_date => {
+          //   let dateObj = dateList.find(item => item.date === exec_date.date);
+          //   let todoItem = {count: exec_date.count, ...taskItem};
+          //   let follow = exec_date.follow;
+          //   if (!dateObj) {
+          //     dateObj = {
+          //       date: exec_date.date,
+          //       tobelist: [],
+          //     };
+          //     // follow.curImg = follow.files[0];
+          //     // follow.forEach(item => {
+          //     //   item.files = JSON.parse(item.files);
+          //     // });
 
-        //     dateObj.tobelist.push({
-        //         plan_id: exec_date.id,
-        //         follow_edit: {
-        //           content: "",
-        //           files: []
-        //         },
-        //         follow: follow,
-        //         ...todoItem
-        //       }
-        //     );
-        //     dateList.push(dateObj);
-        //   } else {
-        //     // follow.forEach(item => {
-        //     //   item.files = JSON.parse(item.files);
-        //     // });
+          //     dateObj.tobelist.push({
+          //         plan_id: exec_date.id,
+          //         follow_edit: {
+          //           content: "",
+          //           files: []
+          //         },
+          //         follow: follow,
+          //         ...todoItem
+          //       }
+          //     );
+          //     dateList.push(dateObj);
+          //   } else {
+          //     // follow.forEach(item => {
+          //     //   item.files = JSON.parse(item.files);
+          //     // });
 
-        //     dateObj.tobelist.push({
-        //         plan_id: exec_date.id,
-        //         follow_edit: {
-        //           content: "",
-        //           files: []
-        //         },
-        //         follow: follow,
-        //         ...todoItem
-        //       }
-        //     );
-        //   }
-        //   follow.forEach(item => {
-        //     item.curImg = item.files[0] || null;
-        //     item.curImgComment = "";
-        //   })
-        // });
+          //     dateObj.tobelist.push({
+          //         plan_id: exec_date.id,
+          //         follow_edit: {
+          //           content: "",
+          //           files: []
+          //         },
+          //         follow: follow,
+          //         ...todoItem
+          //       }
+          //     );
+          //   }
+          //   follow.forEach(item => {
+          //     item.curImg = item.files[0] || null;
+          //     item.curImgComment = "";
+          //   })
+          // });
 
-        // // 待安排的任务
-        // let start = moment(task.start_date, 'YYYY/MM/DD');
-        // let end = moment(task.end_date, 'YYYY/MM/DD');
-        // let cur = moment(task.start_date, 'YYYY/MM/DD');
+          // // 待安排的任务
+          // let start = moment(task.start_date, 'YYYY/MM/DD');
+          // let end = moment(task.end_date, 'YYYY/MM/DD');
+          // let cur = moment(task.start_date, 'YYYY/MM/DD');
 
-        // while (this.isWithinRange(start, end, cur)) {
-        //   let date = cur.format('YYYY/MM/DD');
-        //   let dateObj = dateList.find(item => item.date === date);
+          // while (this.isWithinRange(start, end, cur)) {
+          //   let date = cur.format('YYYY/MM/DD');
+          //   let dateObj = dateList.find(item => item.date === date);
 
-        //   let todoItem = {count: 0, ...taskItem};
+          //   let todoItem = {count: 0, ...taskItem};
 
-        //   if (!dateObj) {
-        //     dateObj = {
-        //       date: date,
-        //       tobelist: []
-        //     };
+          //   if (!dateObj) {
+          //     dateObj = {
+          //       date: date,
+          //       tobelist: []
+          //     };
 
-        //     dateObj.tobelist.push(todoItem);
-        //     dateList.push(dateObj);
-        //   } else {
-        //     if (dateObj.tobelist.findIndex(item => item.task_id === task.task_id) === -1) {
-        //       dateObj.tobelist.push(todoItem);
-        //     }
-        //   }
-        //   cur.add(1, 'day')
-        // }
+          //     dateObj.tobelist.push(todoItem);
+          //     dateList.push(dateObj);
+          //   } else {
+          //     if (dateObj.tobelist.findIndex(item => item.task_id === task.task_id) === -1) {
+          //       dateObj.tobelist.push(todoItem);
+          //     }
+          //   }
+          //   cur.add(1, 'day')
+          // }
 
-        // this.calcTaskCount(task.task_id);
-      });
+          // this.calcTaskCount(task.task_id);
+        });
 
       this.dateList = dateList;
     },
@@ -928,7 +944,8 @@ export default {
   computed: {
     isAssignToday() {
       return (
-        this.alTaskList && this.alTaskList.some(item => item.task&&item.task.task_num > 0)
+        this.alTaskList &&
+        this.alTaskList.some(item => item.task && item.task.task_num > 0)
       );
     }
   }
@@ -937,16 +954,16 @@ export default {
 
 <style scoped>
 .font-size1 {
-  color: #1E90FF;
+  color: #1e90ff;
 }
 .font-size2 {
-  color: #00FFFF;
+  color: #00ffff;
 }
 .font-size3 {
-  color: #DC143C;
+  color: #dc143c;
 }
 .font-size4 {
-  color: #32CD32;
+  color: #32cd32;
 }
 .calendar-wrp {
   background-color: #fff;
