@@ -189,15 +189,9 @@
                 <d-info-item :value="item.content" class="mt15" title="跟进内容" />
                 <d-info-item class="mt10" title="附件" v-if="item.files&&item.files.length" />
                 <v-file-preview :files="item.files" @change:thumb:raw="onFileChange(item,$event)" />
-                <div v-if="ruleStatus === 0&&task.status === 2">
-                  <a @click="agreeApproval(task.id)" class="form-submit-block">同意</a>
-                  <a
-                    @click="rejectApproval(task.id)"
-                    class="form-submit-block form-submit-block__reject"
-                  >拒绝</a>
-                </div>
+                
 
-                <div v-if="item.curImg && canAddCommment">
+                <div v-if="item.curImg && task.status === 3">
                   <label class="add-commemt">
                     <p class="add-commemt__title">对附件【{{item.curImg.title}}】添加备注</p>
                     <textarea
@@ -216,6 +210,13 @@
                 </div>
                 <div class="divider-1 mt20" v-if="index !== task.follow.length-1"></div>
               </div>
+              <div v-if="ruleStatus === 0&&task.status === 2">
+                  <a @click="agreeApproval(task.id)" class="form-submit-block">同意</a>
+                  <a
+                    @click="rejectApproval(task.id)"
+                    class="form-submit-block form-submit-block__reject"
+                  >拒绝</a>
+                </div>
             </div>
           </li>
         </ul>
@@ -488,6 +489,8 @@ export default {
       this.attachToDate();
     },
     setDate(day) {
+      this.submitStatus = false
+      this.changeStatus = false
       this.noTaskList = [];
       this.alTaskList = [];
       this.select = day;
@@ -515,8 +518,12 @@ export default {
           element.selectDate = "";
           element.content = "";
           element.files = []
+          element.follow.forEach(item=>{
+            item.curImg = item.files[0]
+          })
         });
       });
+      
       // let date;
       // if (!arguments.length) {
       //   date = moment();
