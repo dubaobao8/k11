@@ -578,15 +578,108 @@ export default {
       // });
     },
     prevMonth() {
-      let date = this.select.clone().subtract(1, "month");
-      this.setDate(date);
+      let day = this.select.clone().subtract(1, "month");
+      let date;
+        if (!arguments.length) {
+          date = moment();
+        } else {
+          date = day;
+        }
+
+        let old = this.select.clone();
+
+        this.select = date;
+
+        if (!old.isSame(this.select, 'month')) {
+          this.setCalendar(date);
+        }
+
+        this.cur_calendar = this.calendar.find(item => this.isSameDay(this.select, item.moment));
+        this.cur_modify = _.cloneDeep(this.cur_calendar);
+
+        this.cur_modify.tobelist.forEach(task => {
+          task.follow && task.follow.forEach(follow => {
+            follow.files && follow.files.forEach(item => {
+              item.file_img = item.file_url;
+              item.image = item.file_img;
+              item.file_desc = "已上传";
+              item.file_img = item.file_url;
+              item.file_name = item.title;
+              item.file_title = item.title;
+              item.need_reupload = false;
+            })
+          })
+        })
     },
     nextMonth() {
-      let date = this.select.clone().add(1, "month");
-      this.setDate(date);
+      let day = this.select.clone().add(1, "month");
+      let date;
+        if (!arguments.length) {
+          date = moment();
+        } else {
+          date = day;
+        }
+
+        let old = this.select.clone();
+
+        this.select = date;
+
+        if (!old.isSame(this.select, 'month')) {
+          this.setCalendar(date);
+        }
+
+        this.cur_calendar = this.calendar.find(item => this.isSameDay(this.select, item.moment));
+        this.cur_modify = _.cloneDeep(this.cur_calendar);
+
+        this.cur_modify.tobelist.forEach(task => {
+          task.follow && task.follow.forEach(follow => {
+            follow.files && follow.files.forEach(item => {
+              item.file_img = item.file_url;
+              item.image = item.file_img;
+              item.file_desc = "已上传";
+              item.file_img = item.file_url;
+              item.file_name = item.title;
+              item.file_title = item.title;
+              item.need_reupload = false;
+            })
+          })
+        })
+      
     },
     BackToToday() {
-      this.setDate(moment());
+      // this.setDate(moment());
+      let day = moment()
+      let date;
+        if (!arguments.length) {
+          date = moment();
+        } else {
+          date = day;
+        }
+
+        let old = this.select.clone();
+
+        this.select = date;
+
+        if (!old.isSame(this.select, 'month')) {
+          this.setCalendar(date);
+        }
+
+        this.cur_calendar = this.calendar.find(item => this.isSameDay(this.select, item.moment));
+        this.cur_modify = _.cloneDeep(this.cur_calendar);
+
+        this.cur_modify.tobelist.forEach(task => {
+          task.follow && task.follow.forEach(follow => {
+            follow.files && follow.files.forEach(item => {
+              item.file_img = item.file_url;
+              item.image = item.file_img;
+              item.file_desc = "已上传";
+              item.file_img = item.file_url;
+              item.file_name = item.title;
+              item.file_title = item.title;
+              item.need_reupload = false;
+            })
+          })
+        })
     },
     setDayClass(date) {
       let nowDate = new Date();
