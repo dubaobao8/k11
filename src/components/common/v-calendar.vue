@@ -142,10 +142,16 @@
         <p class="ml5 mr5 mt15 fw-b fs1-04" style="color: #484952;">当日已安排的任务</p>
         <ul>
           <li :key="task.id" class="task-box ml5 mr5 mt15 cr3 fs08" v-for="task in alTaskList">
-            <p class="mb10">
-              任务名称：{{task.task.task_name}} 
-              <span :class="setDayClass3(task.status)">{{task.status_name}}</span>
-            </p>
+            <div class="mb10" style="line-height: 25px;display:flex">
+              <div style="flex:1">任务名称：</div>
+              <div style="flex:3">
+                {{task.task.task_name}}
+              <span
+                :class="setDayClass3(task.status)"
+              >{{task.status_name}}</span>
+              </div>
+              
+            </div>
             <p class="mb10">发布人：{{task.task.user.username}}</p>
             <p class="mb10">工作类型：{{task.task.clean_type}}</p>
             <p class="mb10">工作内容：{{task.task.clean_content}}</p>
@@ -159,6 +165,17 @@
                 @select:allData="(date)=>{selectDateTime(date,task)}"
               />
             </p>
+            <div class="mt20 follow" v-if=" task.reason.length>0">
+              <p class="fw-b fs09 cr-black-blue mb10">驳回批注</p>
+              <div v-for="item in task.reason" :key="item.id">
+                <p class="mb10">批注：{{item.content}}</p>
+                <div style="display: flex;justify-content: flex-end; margin-right: 10px;">
+                  -----
+                  <span class="mb10" style="margin-right: 15px;">{{item.create_time}}</span>
+                  <span class="mb10">{{item.user.username}}</span>
+                </div>
+              </div>
+            </div>
             <!-- 添加跟进记录 -->
             <div
               class="mt20 follow"
@@ -171,7 +188,7 @@
                   :files="task.files"
                   :only-camera="true"
                   auto_del
-                  auto_upload 
+                  auto_upload
                   required
                   @push:file="updateView"
                   @push:updateSuccess="updateSuccess"
@@ -189,7 +206,6 @@
                 <d-info-item :value="item.content" class="mt15" title="跟进内容" />
                 <d-info-item class="mt10" title="附件" v-if="item.files&&item.files.length" />
                 <v-file-preview :files="item.files" @change:thumb:raw="onFileChange(item,$event)" />
-                
 
                 <div v-if="item.curImg && task.status === 3">
                   <label class="add-commemt">
@@ -211,12 +227,12 @@
                 <div class="divider-1 mt20" v-if="index !== task.follow.length-1"></div>
               </div>
               <div v-if="ruleStatus === 0&&task.status === 2">
-                  <a @click="agreeApproval(task.id)" class="form-submit-block">同意</a>
-                  <a
-                    @click="rejectApproval(task.id)"
-                    class="form-submit-block form-submit-block__reject"
-                  >拒绝</a>
-                </div>
+                <a @click="agreeApproval(task.id)" class="form-submit-block">同意</a>
+                <a
+                  @click="rejectApproval(task.id)"
+                  class="form-submit-block form-submit-block__reject"
+                >拒绝</a>
+              </div>
             </div>
           </li>
         </ul>
@@ -349,7 +365,7 @@ export default {
       cur_modify: {
         tobelist: []
       },
-      submitBtnStatus:false
+      submitBtnStatus: false
     };
   },
   filter: {},
@@ -357,7 +373,7 @@ export default {
     updateView() {
       this.$forceUpdate();
     },
-    updateSuccess(){
+    updateSuccess() {
       this.$forceUpdate();
     },
     deleteFile() {
@@ -489,12 +505,12 @@ export default {
       this.attachToDate();
     },
     setDate(day) {
-      this.submitStatus = false
-      this.changeStatus = false
+      this.submitStatus = false;
+      this.changeStatus = false;
       this.noTaskList = [];
       this.alTaskList = [];
       this.select = day;
-      this.submitBtnStatus = day._d <= new Date()
+      this.submitBtnStatus = day._d <= new Date();
       if (moment().add("days", 1) <= moment(day)) {
         this.showUpdateBtn = true;
       } else {
@@ -517,13 +533,16 @@ export default {
         this.alTaskList.forEach(element => {
           element.selectDate = "";
           element.content = "";
-          element.files = []
-          element.follow.forEach(item=>{
-            item.curImg = item.files[0]
-          })
+          element.files = [];
+          element.reason.forEach(item => {
+            item.create_time = moment(item.create_time).format('YYYY-MM-DD HH:mm:ss')
+          });
+          element.follow.forEach(item => {
+            item.curImg = item.files[0];
+          });
         });
       });
-      
+
       // let date;
       // if (!arguments.length) {
       //   date = moment();
@@ -640,13 +659,13 @@ export default {
         return false;
       }
       task.totalCount = task.task_num - count;
-      task.count = count
+      task.count = count;
       this.noTaskList.forEach((ele, index) => {
-        if ((ele.id == id)) {
-          this.noTaskList.splice(index,1,task)
+        if (ele.id == id) {
+          this.noTaskList.splice(index, 1, task);
         }
       });
-      
+
       // this.noTaskList = []
       // this.noTaskList.push(task)
       // task.count = task.task_num + count;
@@ -808,20 +827,22 @@ export default {
         port_id: this.$route.params.id,
         ...task
       };
-      data.files = data.files&&data.files.map(file => {
-        return {
-          file_url: file.image,
-          title: file.file_title,
-          small_image: file.small_image
-        };
-      });
+      data.files =
+        data.files &&
+        data.files.map(file => {
+          return {
+            file_url: file.image,
+            title: file.file_title,
+            small_image: file.small_image
+          };
+        });
       let errors = [];
 
       if (!data.content) {
         errors.push("请填写跟进内容");
       }
 
-      if (!data.files&&data.files.length) {
+      if (!data.files && data.files.length) {
         errors.push("请上传附件");
       }
 
