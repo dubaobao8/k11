@@ -98,14 +98,19 @@ export default {
         } else if (item.handle && typeof this[item.handle] === "function") {
           this[item.handle]();
         }
-      } else {
-        if (res.data.data.status !== 1) {
+      } else if(res.data.data.status !== 1 && item.url == "/cleaning_progress"){
           localStorage.setItem("btnNum",2)
           this.$router.push("/cleaning_detail");
-        } else {
-          this.$toast.fail("暂无权限");
+      } else if(item.url === "/cleaning_progress") {
+        this.$toast.fail("暂无权限");
+      } else {
+          if (item.url) {
+          this.$router.push(item.url);
+        } else if (item.handle && typeof this[item.handle] === 'function') {
+          this[item.handle]();
         }
       }
+     
     },
     showSelection(item) {
       if (item.open === false) {
