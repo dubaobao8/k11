@@ -25,8 +25,8 @@
                   v-model="item.clean_content"
                   values="name"/>
         <v-input-counter required title="任务总次数" v-model="item.count"/>
-        <v-picker required title="开始时间" type="datetime" v-model="item.start_time"/>
-        <v-picker required title="结束时间" type="datetime" v-model="item.end_time"/>
+        <v-picker required title="开始时间" :dateStart="new Date()" type="datetime" v-model="item.start_time"/>
+        <v-picker required title="结束时间" :dateStart="new Date()" type="datetime" v-model="item.end_time"/>
       </div>
     </section>
     <action-line @click="addTask" class="bg-white form-item mt20">添加任务</action-line>
