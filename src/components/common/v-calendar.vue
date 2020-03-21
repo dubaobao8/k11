@@ -156,7 +156,7 @@
             <p class="mb10">工作类型：{{task.task.clean_type}}</p>
             <p class="mb10">工作内容：{{task.task.clean_content}}</p>
             <p>
-              <span>当日安排次数：{{task.task.count}}</span>
+              <span>当日安排次数：{{task.count}}</span>
             </p>
             <p class="mt15" v-if="changeStatus">
               <v-picker
