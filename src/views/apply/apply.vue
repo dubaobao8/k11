@@ -91,7 +91,7 @@ export default {
       var res = await request.post("/api/Clean/UnPlanTask", {
         user_id: localStorage.getItem("user_id")
       });
-      if (item.url.path === "/cleaning" || item.url === "/cleaning_detail") {
+      if (item.url&&item.url.path === "/cleaning" || item.url === "/cleaning_detail") {
         if (item.url) {
           this.$router.push(item.url);
           localStorage.setItem("btnNum",3)
