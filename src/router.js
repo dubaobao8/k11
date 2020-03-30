@@ -11,6 +11,7 @@ import engineer from "./views/apply/initiate/engineer.vue";
 import eng_detail from "@/views/details/eng_detail.vue";
 import pot_detail from "./views/details/pot_detail.vue";
 import complete from "./views/complete/complete.vue";
+import completeNew from "./views/completeNew/completeNew";
 import sde from "./views/apply/initiate/sde";
 import sde_detail from "./views/details/sde_detail.vue";
 
@@ -62,6 +63,15 @@ var router = new Router({
       component: complete,
       meta: {
         title: "已审批",
+        keepAlive: true
+      }
+    },
+    {
+      path: "/completeNew",
+      name: "completeNew",
+      component: completeNew,
+      meta: {
+        title: "所有工程单",
         keepAlive: true
       }
     },

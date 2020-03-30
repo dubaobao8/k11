@@ -84,7 +84,9 @@ export default [
     icon: "fa fa-paste",
     color: "#79B3F8",
     open: true,
-    show: true,
+    show: (function () {
+      return localStorage.getItem("status") != 3
+    })(),
     selection: [
       {
         name: "新增单据",
@@ -108,6 +110,39 @@ export default [
       //   name: "草稿箱",
       //   url: "/engineer_draft"
       // }
+    ]
+  },
+  {
+    title: "工程单",
+    icon: "fa fa-paste",
+    color: "#79B3F8",
+    open: true,
+    show: (function () {
+      return localStorage.getItem("status") == 3
+    })(),
+    selection: [
+      {
+        name: "新增单据",
+        url: {
+          path: "/engineer",
+          query: {mode: "release"}
+        }
+      }, {
+        name: "扫一扫",
+        handle: "scanQR"
+      },
+      {
+        name: "进行中的单据",
+        url: "/engineer_progress"
+      },
+      {
+        name: "已完成的单据",
+        url: "/engineer_done"
+      },
+      {
+        name: "所有工程单",
+        url: "/completeNew"
+      }
     ]
   },
   {
