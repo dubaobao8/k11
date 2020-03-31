@@ -134,6 +134,13 @@
           <i class="ml5 fa fa-chevron-right"></i>
         </div>
       </div>
+      <div class="form-inline">
+        <div class="form-title fx100">是否为危机事件 <span class="required">*</span></div>
+        <div >
+           <cube-radio-group @input="radioChange" v-model="selectedRadio"  :options="optionsRadio" :horizontal="true" />
+        </div>
+      </div>
+     
 
       <!-- 明细 -->
 
@@ -369,12 +376,14 @@
   import detailVue from '../../details/detail.vue';
   import VFileContainer from "@/components/form/v-file-container";
   import request from "@/api";
+  import vPicker from "@/components/form/v-picker";
 
   export default {
     components: {
       VFileContainer,
       FileAdd,
-      draftBox
+      draftBox,
+      vPicker
     },
     data() {
       return {
@@ -439,6 +448,8 @@
           po_time: "",
           //救护车
           doc_time: "",
+          //是否为危机事件
+          is_danger:0,
           //其他事件类型
           more_type: "",
           //草稿箱id
@@ -469,9 +480,47 @@
         isShowDraft: false,
         // 显示替换草稿箱
         isShowDraftReplace: false,
+        selectedRadio: 0,
+        optionsRadio: [
+          {
+            label: '是',
+            value: 1
+          },
+          {
+            label: '否',
+            value: 0
+          }
+        ],
+        radioSelectOption: [
+          { text: '第一级（黄色）', value: 1},
+          { text: '第二级（橙色）', value: 2 },
+          { text: '第三级（粉红色）', value: 3 },
+          { text: '第四级（红色）', value: 4 }
+          ]
       };
     },
     methods: {
+      radioChange(value) {
+        if(value == 1) {
+          this.showPicker()
+        } else {
+          this.$set(this.form,"is_danger",0)
+        }
+      },
+       showPicker() {
+        if (!this.picker) {
+          this.picker = this.$createPicker({
+            title: '危机级别',
+            data: [this.radioSelectOption],
+            onSelect: this.selectHandle,
+            onCancel: this.cancelHandle
+          })
+        }
+        this.picker.show()
+      },
+      selectHandle(value) {
+        this.$set(this.form,"is_danger",value[0])
+      },
       // saveDraft() {
       //   console.log("保存草稿箱");
       //   console.log(this.form);
@@ -903,7 +952,6 @@
         }
 
         let data = this.processData();
-
         request.post(url, data).then(res => {
           loading.hide();
           this.$root.$createToast({
@@ -966,6 +1014,8 @@
         this.form.doc_time = data.doc_time;
         this.selectedCopy = data.look_user;
         this.form.port_id = data.id;
+        this.form.is_danger = data.is_danger;
+        this.selectedRadio = data.is_danger==0?0:1
         let files = [];
         let remote_files = data.file_url;
         remote_files.forEach((e, i) => {
@@ -1020,8 +1070,6 @@
       // },
       // 添加明细附件
       addMxFile(item, e) {
-        console.log(e);
-        console.log(item);
         var file = e.target.files[0];
         item.file.push({
           file: file,
@@ -1064,7 +1112,6 @@
         }
 
         let data = this.processData();
-
 
         request.post('/api/Draft/PortSave', data).then(res => {
           loading.clear();
@@ -1222,6 +1269,9 @@
 </script>
 
 <style scoped>
+.cube-radio-group[data-horz="true"]::after, .cube-radio-group[data-col="true"]::after {
+  border: none ;
+}
 
   .copy-men-wrp {
     display: flex;
