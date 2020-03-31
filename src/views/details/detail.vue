@@ -78,6 +78,10 @@
         <h5 class="p-title">救伤车到达时间</h5>
         <span class="p-desc">{{desc.doc_time | transTime}}</span>
       </section>
+      <section class="part-list">
+        <h5 class="p-title">是否为危机事件</h5>
+        <span class="p-desc">{{desc.is_danger}}</span>
+      </section>
       <div class="divider"></div>
 
       <!-- 明细 详情-->

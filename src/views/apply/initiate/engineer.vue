@@ -224,7 +224,11 @@
       // 搜索已完成的工程单
       searchReport(content) {
         if (content) {
-          SearchEngineerReport(content).then(res => {
+          let obj = {
+            content:content,
+            place:this.form_model.place?this.form_model.place.join(","):""
+          }
+          SearchEngineerReport(obj).then(res => {
             this.options.engineer_report = res.data.data;
           })
         } else {

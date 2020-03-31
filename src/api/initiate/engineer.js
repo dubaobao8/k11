@@ -5,7 +5,7 @@ export const GetEngineerPlace = () => request.get('/api/project/ProPlace');
 // 获取工作类型
 export const GetEngineerWorkType = () => request.get('/api/project/ProType');
 // 搜索已完成的工程单
-export const SearchEngineerReport = (content) => request.post('/api/project/SearchAl', {content});
+export const SearchEngineerReport = (content) => request.post('/api/project/SearchAl', content);
 // 发布工程单
 export const SendEngineerReport = data => request.post('/api/Project/SendProject',data);
 // 选择详细位置
