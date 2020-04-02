@@ -14,6 +14,7 @@ import complete from "./views/complete/complete.vue";
 import completeNew from "./views/completeNew/completeNew";
 import sde from "./views/apply/initiate/sde";
 import sde_detail from "./views/details/sde_detail.vue";
+import statistics from "./views/statistics/statistics.vue";
 
 Vue.use(Router);
 
@@ -27,6 +28,16 @@ var router = new Router({
       component: () => import('@/components/report-list-item/report-list-type/report-list-engineer.vue'),
       meta: {
         title: "test"
+      }
+    },
+    {
+      path: "/statistics",
+      name: "statistics",
+      component: statistics,
+      meta: {
+        title: "统计",
+        keepAlive: true,
+        backgroundColor: "#f2f2f2"
       }
     },
     {

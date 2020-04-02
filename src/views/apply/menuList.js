@@ -48,6 +48,10 @@ export default [
       {
         name: "草稿箱",
         url: "/incident_draft"
+      },
+      {
+        name: "统计",
+        url: "/statistics"
       }
     ]
   },
