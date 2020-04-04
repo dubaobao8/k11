@@ -31,8 +31,8 @@ var router = new Router({
       }
     },
     {
-      path: "/statistics",
-      name: "statistics",
+      path: "/statisticsNew",
+      name: "statisticsNew",
       component: statistics,
       meta: {
         title: "统计",

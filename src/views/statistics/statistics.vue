@@ -1,33 +1,27 @@
 <template>
   <div>
-    <cube-tab-bar style="tabHeader" v-model="selectedLabel" show-slider :data="tabLabels"></cube-tab-bar>
+    <cube-tab-bar
+      style="tabHeader"
+      @change="changeDate"
+      v-model="selectedLabel"
+      show-slider
+      :data="tabLabels"
+    ></cube-tab-bar>
     <div class="tabArea">
-      <transition name="moveR">
-        <div class="sec1" v-show="selectedLabel == '昨天'">
-          <tab-view1></tab-view1>
-        </div>
-      </transition>
-      <transition name="moveR">
-        <div class="sec2" v-show="selectedLabel == '本周'">
-          <tab-view1></tab-view1>
-        </div>
-      </transition>
-      <transition name="moveR">
-        <div class="sec3" v-show="selectedLabel == '本月'">
-          <tab-view1></tab-view1>
-        </div>
-      </transition>
-      <transition name="moveR">
-        <div class="sec4" v-show="selectedLabel == '本年'">
-          <tab-view1></tab-view1>
-        </div>
-      </transition>
+      <div v-for="(item, index) in tabLabels" :key="index">
+        <transition name="moveR">
+          <div :class="'sec' + (index + 1)" v-if="selectedLabel == item.label">
+            <tab-view @tabChange="tabChange" :dataList="dataList"></tab-view>
+          </div>
+        </transition>
+      </div>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-import TabView1 from "./tabView1.vue";
+import axios from "axios/index";
+import TabView from "./tabView.vue";
 export default {
   data() {
     return {
@@ -45,13 +39,82 @@ export default {
         {
           label: "本年"
         }
-      ]
+      ],
+      param: {
+        type: 1,
+        status: 1,
+        port_type: 1
+      },
+      dataList: []
     };
   },
   components: {
-    TabView1
+    TabView
   },
-  methods: {}
+  mounted() {
+    let pageStatus = this.$route.query.pageStatus
+    if(pageStatus) {
+      this.$set(this.param, "port_type", pageStatus);
+    }
+    this.getDataList();
+  },
+  methods: {
+    tabChange(item) {
+      switch (item) {
+        case "新增单据":
+          this.$set(this.param, "status", 1);
+          break;
+        case "进行单据":
+          this.$set(this.param, "status", 2);
+          break;
+        case "完成单据":
+          this.$set(this.param, "status", 3);
+      }
+      this.getDataList();
+    },
+    getDataList() {
+      axios({
+        baseURL: this.$store.state.domain,
+        url: "/api/Statistics/ThingReport",
+        headers: {
+          token: localStorage.getItem("token")
+        },
+        method: "POST",
+        data: this.param
+      })
+        .then(res => {
+          this.dataList = res.data.data;
+        })
+        .catch(err => {
+          this.$createToast({
+            time: 1000,
+            type: "txt",
+            txt: "操作失败"
+          }).show();
+        });
+    },
+    changeDate(item) {
+      switch (item) {
+        case "昨天":
+          this.$set(this.param, "type", 1);
+          this.$set(this.param, "status", 1);
+          break;
+        case "本周":
+          this.$set(this.param, "type", 2);
+          this.$set(this.param, "status", 1);
+          break;
+        case "本月":
+          this.$set(this.param, "type", 3);
+          this.$set(this.param, "status", 1);
+          break;
+        case "本年":
+          this.$set(this.param, "type", 4);
+          this.$set(this.param, "status", 1);
+          break;
+      }
+      this.getDataList();
+    }
+  }
 };
 </script>
 <style  scoped>

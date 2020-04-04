@@ -8,59 +8,15 @@
     <div class="right-panel">
       <div class="right-area">
         <ul>
-          <li class="row row-top">
-            <div class="row-title">综合部</div>
+          <li class="row" :class="index===0?'row-top':''" v-for="(item,index) in dataList" :key="index">
+            <div class="row-title">{{item.department}}</div>
             <div class="row-data1">
               <div>超时</div>
-              <div>1</div>
+              <div>{{item.overtime_count}}</div>
             </div>
             <div class="row-data2">
               <div>未超时</div>
-              <div>3</div>
-            </div>
-          </li>
-					<li class="row">
-            <div class="row-title">保安部</div>
-            <div class="row-data1">
-              <div>超时</div>
-              <div>1</div>
-            </div>
-            <div class="row-data2">
-              <div>未超时</div>
-              <div>3</div>
-            </div>
-          </li>
-					<li class="row">
-            <div class="row-title">工程部</div>
-            <div class="row-data1">
-              <div>超时</div>
-              <div>1</div>
-            </div>
-            <div class="row-data2">
-              <div>未超时</div>
-              <div>3</div>
-            </div>
-          </li>
-					<li class="row">
-            <div class="row-title">客服部</div>
-            <div class="row-data1">
-              <div>超时</div>
-              <div>1</div>
-            </div>
-            <div class="row-data2">
-              <div>未超时</div>
-              <div>3</div>
-            </div>
-          </li>
-					<li class="row">
-            <div class="row-title">物业部</div>
-            <div class="row-data1">
-              <div>超时</div>
-              <div>1</div>
-            </div>
-            <div class="row-data2">
-              <div>未超时</div>
-              <div>3</div>
+              <div>{{item.intime_count}}</div>
             </div>
           </li>
         </ul>
@@ -71,6 +27,9 @@
 
 <script >
 export default {
+  props: {
+    dataList:null,
+  },
   data() {
     return {
       selectedLabel: "新增单据",
@@ -87,9 +46,12 @@ export default {
       ]
     };
   },
+  mounted(){
+    this.selectedLabel = "新增单据"
+  },
   methods: {
     changeHandler(label) {
-      console.log(label, "label");
+      this.$emit("tabChange", label)
     }
   }
 };
@@ -117,7 +79,7 @@ export default {
 <style scoped >
 .page {
   display: flex;
-	width: 100vw;
+  width: 100vw;
 }
 .left-panel {
   flex: 1;
@@ -129,7 +91,7 @@ export default {
   flex: 3;
   margin-left: 10px;
   margin-top: 5px;
-	margin-right: 10px;
+  margin-right: 10px;
 }
 .right-area {
   width: 100%;
@@ -153,7 +115,7 @@ li {
   display: flex;
 }
 .row-top {
-	border-top: none;
+  border-top: none;
 }
 .row-title {
   flex: 5;

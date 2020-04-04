@@ -6,7 +6,24 @@ export default [
     to: {path: "/sde"},
     open: true,
     show: true,
-    selection: [
+    selection: localStorage.getItem("status") == 3?[
+      {
+        name: "新增单据",
+        url: "/sde"
+      },
+      {
+        name: "进行中的单据",
+        url: "/takenum_progress"
+      },
+      {
+        name: "已完成的单据",
+        url: "/takenum_done"
+      },
+      {
+        name: "统计",
+        url: {path: "/statisticsNew", query: {pageStatus: 4}}
+      }
+    ]:[
       {
         name: "新增单据",
         url: "/sde"
@@ -32,7 +49,7 @@ export default [
     color: "#74C4C3",
     open: true,
     show: true,
-    selection: [
+    selection:localStorage.getItem("status") == 3? [
       {
         name: "新增单据",
         url: {path: "/report", query: {mode: "release"}}
@@ -51,7 +68,24 @@ export default [
       },
       {
         name: "统计",
-        url: "/statistics"
+        url: {path: "/statisticsNew", query: {pageStatus: 1}}
+      }
+    ]:[
+      {
+        name: "新增单据",
+        url: {path: "/report", query: {mode: "release"}}
+      },
+      {
+        name: "进行中的单据",
+        url: "/incident_progress"
+      },
+      {
+        name: "已完成的单据",
+        url: "/incident_done"
+      },
+      {
+        name: "草稿箱",
+        url: "/incident_draft"
       }
     ]
   },
@@ -64,7 +98,24 @@ export default [
     show: (function () {
       return ["保安部", "综合部"].indexOf(localStorage.getItem("department")) !== -1
     })(),
-    selection: [
+    selection: localStorage.getItem("status") == 3?[
+      {
+        name: "新增单据",
+        url: {path: "/potrol", query: {mode: "release"}}
+      },
+      {
+        name: "进行中的单据",
+        url: "/patrol_progress"
+      },
+      {
+        name: "已完成的单据",
+        url: "/patrol_done"
+      },
+      {
+        name: "统计",
+        url: {path: "/statisticsNew", query: {pageStatus: 2}}
+      }
+    ]:[
       {
         name: "新增单据",
         url: {path: "/potrol", query: {mode: "release"}}
@@ -88,10 +139,35 @@ export default [
     icon: "fa fa-paste",
     color: "#79B3F8",
     open: true,
-    show: (function () {
-      return localStorage.getItem("status") != 3
-    })(),
-    selection: [
+    show: true,
+    selection: localStorage.getItem("status") == 3?[
+      {
+        name: "新增单据",
+        url: {
+          path: "/engineer",
+          query: {mode: "release"}
+        }
+      }, {
+        name: "扫一扫",
+        handle: "scanQR"
+      },
+      {
+        name: "进行中的单据",
+        url: "/engineer_progress"
+      },
+      {
+        name: "已完成的单据",
+        url: "/engineer_done"
+      },
+      {
+        name: "所有工程单",
+        url: "/completeNew"
+      },
+      {
+        name: "统计",
+        url: {path: "/statisticsNew", query: {pageStatus: 3}}
+      }
+    ]:[
       {
         name: "新增单据",
         url: {
@@ -114,39 +190,6 @@ export default [
       //   name: "草稿箱",
       //   url: "/engineer_draft"
       // }
-    ]
-  },
-  {
-    title: "工程单",
-    icon: "fa fa-paste",
-    color: "#79B3F8",
-    open: true,
-    show: (function () {
-      return localStorage.getItem("status") == 3
-    })(),
-    selection: [
-      {
-        name: "新增单据",
-        url: {
-          path: "/engineer",
-          query: {mode: "release"}
-        }
-      }, {
-        name: "扫一扫",
-        handle: "scanQR"
-      },
-      {
-        name: "进行中的单据",
-        url: "/engineer_progress"
-      },
-      {
-        name: "已完成的单据",
-        url: "/engineer_done"
-      },
-      {
-        name: "所有工程单",
-        url: "/completeNew"
-      }
     ]
   },
   {
@@ -188,7 +231,26 @@ export default [
     color: "#ff8383",
     show: true,
     open: true,
-    selection: [
+    selection: localStorage.getItem("status") == 3?[
+      {
+        name: "新增单据",
+        url: {
+          path: "/todotask",
+        }
+      },
+      {
+        name: "进行中的单据",
+        url: "/todotask_progress"
+      },
+      {
+        name: "已完成的单据",
+        url: "/todotask_done"
+      },
+      {
+        name: "统计",
+        url: {path: "/statisticsNew", query: {pageStatus: 6}}
+      }
+    ]:[
       {
         name: "新增单据",
         url: {
@@ -217,7 +279,30 @@ export default [
     open: (function () {
       return ["综合部"].indexOf(localStorage.getItem("department")) !== -1;
     })(),
-    selection: [
+    selection:localStorage.getItem("status") == 3? [
+      {
+        name: "新增单据",
+        url: {
+          path: "/purchase",
+        }
+      },
+      {
+        name: "进行中的单据",
+        url: "/purchase_progress"
+      },
+      {
+        name: "已完成的单据",
+        url: "/purchase_done"
+      },
+      {
+        name: "草稿箱",
+        url: "/purchase_draft"
+      },
+      {
+        name: "统计",
+        url: {path: "/statisticsNew", query: {pageStatus: 5}}
+      }
+    ]:[
       {
         name: "新增单据",
         url: {
@@ -287,7 +372,24 @@ export default [
     color: "#059EF9",
     show: true,
     open: true,
-    selection: [
+    selection: localStorage.getItem("status") == 3?[
+      {
+        name: "新增文具采购",
+        url: "/stationery",
+      },
+      {
+        name: "进行中的文具采购",
+        url: "/stationery_progress"
+      },
+      {
+        name: "已完成的文具采购",
+        url: "/stationery_done"
+      },
+      {
+        name: "统计",
+        url: {path: "/statisticsNew", query: {pageStatus: 8}}
+      }
+    ]:[
       {
         name: "新增文具采购",
         url: "/stationery",
