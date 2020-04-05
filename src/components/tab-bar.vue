@@ -32,7 +32,34 @@
     data() {
       return {
         selected: this.curTab,
-        tabs: [
+        tabs: localStorage.getItem("status") == 3?[
+          {
+            label: "单据",
+            value: "apply",
+            icon: "fa fa-file-o"
+          },
+          {
+            label: "我的单据",
+            value: "mine",
+            icon: "fa fa-calendar-o"
+          },
+          {
+            label: "待我审批",
+            value: "approval",
+            icon: "fa fa-envelope-open-o",
+            unreadCount: 0
+          },
+          {
+            label: "待我查阅",
+            value: "myNoLookTask",
+            icon: "fa fa-calendar-check-o"
+          },
+          {
+            label: "我的审阅",
+            value: "myAlLookTask",
+            icon: "fa fa-pencil-square-o"
+          }
+        ]:[
           {
             label: "单据",
             value: "apply",

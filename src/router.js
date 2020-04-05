@@ -11,6 +11,8 @@ import engineer from "./views/apply/initiate/engineer.vue";
 import eng_detail from "@/views/details/eng_detail.vue";
 import pot_detail from "./views/details/pot_detail.vue";
 import complete from "./views/complete/complete.vue";
+import myAlLookTask from "./views/myAlLookTask/myAlLookTask.vue";
+import myNoLookTask from "./views/myNoLookTask/myNoLookTask.vue";
 import completeNew from "./views/completeNew/completeNew";
 import completeStatistic from "./views/completeStatistic/completeStatistic";
 import sde from "./views/apply/initiate/sde";
@@ -75,6 +77,24 @@ var router = new Router({
       component: complete,
       meta: {
         title: "已审批",
+        keepAlive: true
+      }
+    },
+    {
+      path: "/myNoLookTask",
+      name: "myNoLookTask",
+      component: myNoLookTask,
+      meta: {
+        title: "待我查阅",
+        keepAlive: true
+      }
+    },
+    {
+      path: "/myAlLookTask",
+      name: "myAlLookTask",
+      component: myAlLookTask,
+      meta: {
+        title: "我的审阅",
         keepAlive: true
       }
     },

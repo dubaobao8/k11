@@ -86,7 +86,8 @@ export default {
 <style scoped >
 .page {
   display: flex;
-  width: 100vw;
+  /* width: 100vw; */
+  flex: 1;
 }
 .left-panel {
   flex: 1;

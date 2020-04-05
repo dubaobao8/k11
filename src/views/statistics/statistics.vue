@@ -8,12 +8,12 @@
       :data="tabLabels"
     ></cube-tab-bar>
     <div class="tabArea">
-      <div v-for="(item, index) in tabLabels" :key="index">
-        <transition name="moveR">
+      <div v-for="(item, index) in tabLabels" :key="index" class="tabItem">
+        <!-- <transition name="moveR"> -->
           <div :class="'sec' + (index + 1)" v-if="selectedLabel == item.label">
             <tab-view @tabChange="tabChange" @clickItem="clickItem" :dataList="dataList"></tab-view>
           </div>
-        </transition>
+        <!-- </transition> -->
       </div>
     </div>
   </div>
@@ -130,7 +130,7 @@ export default {
 };
 </script>
 <style  scoped>
-.moveR-enter,
+/* .moveR-enter,
 .moveR-leave-to {
   opacity: 0;
 }
@@ -141,15 +141,18 @@ export default {
 .moveR-enter-active,
 .moveR-leave-active {
   transition: all 0.2s;
-}
+} */
 
 .cube-tab-bar {
   background-color: #fff;
 }
 .tabArea {
   width: 100%;
-  display: flex;
-  flex-direction: row;
+  /* display: flex;
+  flex-direction: row; */
+}
+.tabItem {
+  width: 100%;
 }
 .sec1 {
   width: 100%;
