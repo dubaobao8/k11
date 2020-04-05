@@ -45,7 +45,7 @@ export default [
     to: { path: "/sde" },
     open: true,
     show: true,
-    selection: localStorage.getItem("status") == 3 || ruleUserArr2.indexOf(userId) > -1 ? [
+    selection: localStorage.getItem("status") == 3 || (ruleUserArr2 && ruleUserArr2.indexOf(userId) > -1) ? [
       {
         name: "新增单据",
         url: "/sde"
@@ -88,7 +88,7 @@ export default [
     color: "#74C4C3",
     open: true,
     show: true,
-    selection: localStorage.getItem("status") == 3 || ruleUserArr2.indexOf(userId) > -1 ? [
+    selection: localStorage.getItem("status") == 3 || (ruleUserArr2 && ruleUserArr2.indexOf(userId) > -1) ? [
       {
         name: "新增单据",
         url: { path: "/report", query: { mode: "release" } }
@@ -137,7 +137,7 @@ export default [
     show: (function () {
       return ["保安部", "综合部"].indexOf(localStorage.getItem("department")) !== -1
     })(),
-    selection: localStorage.getItem("status") == 3 || ruleUserArr2.indexOf(userId) > -1 ? [
+    selection: localStorage.getItem("status") == 3 || (ruleUserArr2 && ruleUserArr2.indexOf(userId) > -1) ? [
       {
         name: "新增单据",
         url: { path: "/potrol", query: { mode: "release" } }
@@ -220,7 +220,7 @@ export default [
     color: "#ff8383",
     show: true,
     open: true,
-    selection: localStorage.getItem("status") == 3 || ruleUserArr2.indexOf(userId) > -1 ? [
+    selection: localStorage.getItem("status") == 3 || (ruleUserArr2 && ruleUserArr2.indexOf(userId) > -1) ? [
       {
         name: "新增单据",
         url: {
@@ -268,7 +268,7 @@ export default [
     open: (function () {
       return ["综合部"].indexOf(localStorage.getItem("department")) !== -1;
     })(),
-    selection: localStorage.getItem("status") == 3 || ruleUserArr2.indexOf(userId) > -1 ? [
+    selection: localStorage.getItem("status") == 3 || (ruleUserArr2 && ruleUserArr2.indexOf(userId) > -1) ? [
       {
         name: "新增单据",
         url: {
@@ -361,7 +361,7 @@ export default [
     color: "#059EF9",
     show: true,
     open: true,
-    selection: localStorage.getItem("status") == 3 || ruleUserArr2.indexOf(userId) > -1 ? [
+    selection: localStorage.getItem("status") == 3 || (ruleUserArr2 && ruleUserArr2.indexOf(userId) > -1) ? [
       {
         name: "新增文具采购",
         url: "/stationery",
