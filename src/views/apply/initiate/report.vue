@@ -1015,7 +1015,7 @@
         this.selectedCopy = data.look_user;
         this.form.port_id = data.id;
         this.form.is_danger = data.is_danger;
-        this.selectedRadio = data.is_danger==0?0:1
+        // this.selectedRadio = data.is_danger==0?0:1
         let files = [];
         let remote_files = data.file_url;
         remote_files.forEach((e, i) => {

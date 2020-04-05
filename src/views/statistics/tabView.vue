@@ -10,11 +10,11 @@
         <ul>
           <li class="row" :class="index===0?'row-top':''" v-for="(item,index) in dataList" :key="index">
             <div class="row-title">{{item.department}}</div>
-            <div class="row-data1">
+            <div class="row-data1" @click="clickItem(1,item.department)">
               <div>超时</div>
               <div>{{item.overtime_count}}</div>
             </div>
-            <div class="row-data2">
+            <div class="row-data2" @click="clickItem(2,item.department)">
               <div>未超时</div>
               <div>{{item.intime_count}}</div>
             </div>
@@ -52,6 +52,13 @@ export default {
   methods: {
     changeHandler(label) {
       this.$emit("tabChange", label)
+    },
+    clickItem(item,department) {
+      let obj = {
+        item:item,
+        department:department
+      }
+      this.$emit("clickItem", obj)
     }
   }
 };

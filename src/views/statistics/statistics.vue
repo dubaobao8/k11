@@ -11,7 +11,7 @@
       <div v-for="(item, index) in tabLabels" :key="index">
         <transition name="moveR">
           <div :class="'sec' + (index + 1)" v-if="selectedLabel == item.label">
-            <tab-view @tabChange="tabChange" :dataList="dataList"></tab-view>
+            <tab-view @tabChange="tabChange" @clickItem="clickItem" :dataList="dataList"></tab-view>
           </div>
         </transition>
       </div>
@@ -71,6 +71,18 @@ export default {
           this.$set(this.param, "status", 3);
       }
       this.getDataList();
+    },
+    clickItem(item){
+      this.$router.push({
+          path: "/completeStatistic",
+          query: {
+            type: this.param.type,
+            status:this.param.status,
+            over_time:item.item,
+            department:item.department,
+            port_type:this.param.port_type
+          }
+        });
     },
     getDataList() {
       axios({

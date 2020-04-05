@@ -12,6 +12,7 @@ import eng_detail from "@/views/details/eng_detail.vue";
 import pot_detail from "./views/details/pot_detail.vue";
 import complete from "./views/complete/complete.vue";
 import completeNew from "./views/completeNew/completeNew";
+import completeStatistic from "./views/completeStatistic/completeStatistic";
 import sde from "./views/apply/initiate/sde";
 import sde_detail from "./views/details/sde_detail.vue";
 import statistics from "./views/statistics/statistics.vue";
@@ -83,6 +84,15 @@ var router = new Router({
       component: completeNew,
       meta: {
         title: "所有工程单",
+        keepAlive: true
+      }
+    },
+    {
+      path: "/completeStatistic",
+      name: "completeStatistic",
+      component: completeStatistic,
+      meta: {
+        title: "统计详细",
         keepAlive: true
       }
     },
