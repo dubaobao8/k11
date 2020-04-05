@@ -3,7 +3,7 @@
     <main class="bg-white">
       <!-- 搜索框 -->
       <section class="search-wrp">
-        <v-search-new @select="onSelect" class="search" />
+        <v-search @select="onSelect" class="search"/>
       </section>
 
       <!-- 列表 -->
@@ -16,13 +16,13 @@
 </template>
 
 <script>
-import VSearchNew from "@/components/search/v-search-new";
+import VSearch from "@/components/search/v-search";
 import TabBar from "@/components/tab-bar";
 import VListReportsNew from "@/components/srcollList/v-list-reports-new";
 
 export default {
   name: "mine",
-  components: { VListReportsNew, VSearchNew, TabBar },
+  components: { VListReportsNew, VSearch, TabBar },
   data() {
     return {
       url: "/api/Statistics/AlCheckList",
