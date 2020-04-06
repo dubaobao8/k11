@@ -37,6 +37,8 @@ export default {
           localStorage.setItem("department", data.department);
           localStorage.setItem("is_look", data.is_look);
           localStorage.setItem("user_name", data.token.user.name);
+          localStorage.setItem("ruleUserArr1", []);
+          localStorage.setItem("ruleUserArr2", []);
           axios({
             baseURL: this.$store.state.domain,
             url: "/api/Project/LookUser",
@@ -45,6 +47,8 @@ export default {
           }).then(res2 =>{
             let ruleUserArr = res2.data.data
             localStorage.setItem("ruleUserArr1", JSON.stringify(ruleUserArr));
+          }).catch(err=>{
+            console.log(err, "err")
           })
           axios({
             baseURL: this.$store.state.domain,
@@ -54,6 +58,8 @@ export default {
           }).then(res3 =>{
             let ruleUserArr2 = res3.data.data
             localStorage.setItem("ruleUserArr2", JSON.stringify(ruleUserArr2));
+          }).catch(err=>{
+            console.log(err, "err2")
           })
           // console.log("登录成功！" + data.token.user.name);
           this.$createDialog({

@@ -1,6 +1,15 @@
 // 校验的判断
-let ruleUserArr1 = JSON.parse(localStorage.getItem("ruleUserArr1"))
-let ruleUserArr2 = JSON.parse(localStorage.getItem("ruleUserArr2"))
+let arrStr1 = localStorage.getItem("ruleUserArr1")
+let ruleUserArr1 = []
+if(arrStr1) {
+  ruleUserArr1 = JSON.parse(localStorage.getItem("ruleUserArr1"))
+}
+let arrStr2 = localStorage.getItem("ruleUserArr2")
+let ruleUserArr2 = []
+if(arrStr2) {
+  ruleUserArr2 = JSON.parse(localStorage.getItem("ruleUserArr2"))
+}
+
 let userId = Number(localStorage.getItem("user_id"))
 let munuItem1 = {
   name: "所有工程单",
