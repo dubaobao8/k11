@@ -61,6 +61,21 @@ export default {
       }
     },
     gotoDetail(event) {
+      if (this.data.list_type == 1) {
+        axios({
+          baseURL: this.$store.state.domain,
+          url: "/api/Statistics/BossRead",
+          method: "POST",
+          headers: {
+            token: localStorage.getItem("token")
+          },
+          data: {
+            port_id: this.data.id
+          }
+        }).then(res => {
+          // console.log(res, "res2222")
+        });
+      }
       var btn = this.$refs.copy;
       if (event.target != btn) {
         this.$router.push("/sde_detail/" + this.data.id);

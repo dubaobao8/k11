@@ -1,6 +1,6 @@
 <template>
   <section>
-    <div @click="goto" class="report-list-item">
+    <div @click="goto" :class="(type==1||type == 2||type == 3||type == 4||type == 5||type == 6||type == 8)? 'report-list-item':''">
       <report-list-incident-new :data="info" v-if="type == 1" />
       <report-list-patrol-new :data="info" v-if="type == 2" />
       <report-list-engineer-new :data="info" v-if="type == 3" />

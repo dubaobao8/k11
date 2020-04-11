@@ -53,6 +53,21 @@ export default {
       }
     },
     gotoDetail() {
+      if (this.data.list_type == 1) {
+        axios({
+          baseURL: this.$store.state.domain,
+          url: "/api/Statistics/BossRead",
+          method: "POST",
+          headers: {
+            token: localStorage.getItem("token")
+          },
+          data: {
+            port_id: this.data.id
+          }
+        }).then(res => {
+          // console.log(res, "res2222")
+        });
+      }
       this.$router.push("/pot_detail/" + this.data.id);
     },
     showOpinion(content) {
