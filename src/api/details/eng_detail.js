@@ -33,6 +33,12 @@ export const AssignRepairmen = (worker_id, port_id, type) => request.post("/api/
 // 领班同意维修通过
 export const ApprovalAgreeMaintain = (port_id,follow_id) => request.post('/api/project/Adopt', {port_id,follow_id});
 
+// 复核小组审批维修
+export const ApprovalAgainAdopt = (port_id,follow_id) => request.post('/api/project/AgainAdopt', {port_id,follow_id});
+
+// 发单人审批维修
+export const ApprovalSingleAgainAdopt = (port_id,follow_id) => request.post('/api/project/SingleAgainAdopt', {port_id,follow_id});
+
 // 领班拒绝维修通过
 export const ApprovalRejectMantain = (port_id, content, follow_id) => request.post('/api/project/Fail', {
   port_id,

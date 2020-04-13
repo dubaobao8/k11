@@ -83,6 +83,14 @@
             "6": {
               color: "#FF004C",
               desc: "已驳回"
+            },
+            "7": {
+              color: "#E4CD25",
+              desc: "复核小组审批"
+            },
+            "8": {
+              color: "#EA5117",
+              desc: "发单人审批"
             }
           },
           purchase: {
