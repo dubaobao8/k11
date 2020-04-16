@@ -304,28 +304,46 @@ export default {
     // 是否可以接受工程单
     canIAccept() {
       let role = [2, 3];
-      return (
-        !!~role.indexOf(this.info_data.user_role.role) &&
-        this.info_data.status == 1
-      );
+      let resRole = this.info_data.user_role.role;
+      resRole = resRole && resRole.split(",");
+      let newArr = [];
+      if (role && resRole) {
+        for (let i = 0; i < role.length; i++) {
+          for (let j = 0; j < resRole.length; j++) {
+            if (resRole[j] == role[i]) {
+              newArr.push(resRole[j]);
+            }
+          }
+        }
+      }
+      return newArr.length > 0 && this.info_data.status == 1;
     },
     // 是否可以拒绝工程单
     canIReject() {
-      return this.info_data.user_role.role == 3 && this.info_data.status == 1;
+      let resArr = this.info_data.user_role.role;
+      let resStatus = resArr && resArr.split(",").indexOf("3");
+      return resStatus >= 0 && this.info_data.status == 1;
     },
     // 是否可以指派维修员
     canIAssign() {
+      let resArr = this.info_data.user_role.role;
+      let resArr2 = this.info_data.user_role.type;
+      let resStatus = resArr && resArr.split(",").indexOf("2");
+      let resStatus2 = resArr2 && resArr2.split(",").indexOf(this.info_data.group_type + "");
       return (
-        this.info_data.user_role.role == 2 &&
+        resStatus >= 0 &&
         this.info_data.status == 2 &&
-        this.info_data.group_type == this.info_data.user_role.type
+        resStatus2 >= 0
       );
     },
     // 是否可以审批维修记录(通过或者不通过)
     canIApproval() {
+      let resArr = this.info_data.user_role.role;
+      let resStatus1 = resArr && resArr.split(",").indexOf("2");
+      let resStatus2 = resArr && resArr.split(",").indexOf("6");
       return (
-        ((this.info_data.user_role.role == 2 && this.info_data.status == 4) ||
-          (this.info_data.user_role.role == 6 && this.info_data.status == 7) ||
+        ((resStatus1 >= 0 && this.info_data.status == 4) ||
+          (resStatus2 >= 0 && this.info_data.status == 7) ||
           (this.info_data.pro_user &&
             this.info_data.pro_user.id == localStorage.getItem("user_id") &&
             this.info_data.status == 8)) &&
@@ -468,13 +486,14 @@ export default {
     // 工程小组接受工程单
     acceptReport() {
       var _this = this;
-      var type = this.info_data.user_role.type * 1;
+      var type = this.info_data.user_role.type;
+      let resStatus = type && type.split(",").indexOf("6");
       this.$createDialog({
         title: "确定接受任务？",
         icon: "cubeic-warn",
         type: "confirm",
         onConfirm: () => {
-          if (type === 6) {
+          if (!resStatus) {
             GetEngineerGroup()
               .then(res => {
                 this.$createPicker({
@@ -639,7 +658,7 @@ export default {
               .catch(err => {
                 this.$toast.fail("操作失败！");
               });
-          } else if(this.info_data.status == 8) {
+          } else if (this.info_data.status == 8) {
             ApprovalSingleAgainAdopt(this.$route.params.id, follow_id)
               .then(res => {
                 this.$toast.success({ message: "已通过审批", mask: true });
@@ -652,17 +671,16 @@ export default {
               });
           } else {
             ApprovalAgreeMaintain(this.$route.params.id, follow_id)
-            .then(res => {
-              this.$toast.success({ message: "已通过审批", mask: true });
-              setTimeout(() => {
-                location.reload();
-              }, 1000);
-            })
-            .catch(err => {
-              this.$toast.fail("操作失败！");
-            });
+              .then(res => {
+                this.$toast.success({ message: "已通过审批", mask: true });
+                setTimeout(() => {
+                  location.reload();
+                }, 1000);
+              })
+              .catch(err => {
+                this.$toast.fail("操作失败！");
+              });
           }
-          
         }
       }).show();
     },

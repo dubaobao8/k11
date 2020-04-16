@@ -3,7 +3,7 @@
     <main class="bg-white">
       <!-- 搜索框 -->
       <section class="search-wrp">
-        <v-search @select="onSelect" class="search"/>
+        <v-search  :newSearchParam="newSearchParam" @select="onSelect" class="search"/>
       </section>
 
       <!-- 列表 -->
@@ -19,31 +19,55 @@
 import VSearch from "@/components/search/v-search";
 import TabBar from "@/components/tab-bar";
 import VListReportsNew from "@/components/srcollList/v-list-reports-new";
-
+import { mapMutations } from "vuex";
 export default {
   name: "mine",
   components: { VListReportsNew, VSearch, TabBar },
   data() {
     return {
       url: "/api/Statistics/AlCheckList",
-      extraParams: {}
+      extraParams: {},
+      newSearchParam: {}
     };
   },
   methods: {
+    ...mapMutations(["addSearchParam", "deleteSearchParam"]),
     // 搜索框选择完毕
     onSelect(data) {
+      let searchParam = {
+        page: "myAlLookTaskPage"
+      };
       if (!data.status && !data.text && !data.type) {
         this.url = "/api/Statistics/AlCheckList";
         this.extraParams = {};
+        searchParam.param = this.extraParams;
+        this.deleteSearchParam(searchParam);
       } else {
         this.url = "/api/Statistics/AlCheckList";
         this.extraParams = {
           port_type: data.type * 1,
           status: data.status ? data.status : 0,
-          content: data.text
+          content: data.text,
+          selectedText: data.selectedText
         };
+        searchParam.param = this.extraParams;
       }
+      this.addSearchParam(searchParam);
     }
+  },
+  mounted(){
+    let searhList = this.$store.state.searchParamList;
+    searhList.forEach(item => {
+      if (item && item.page == "myAlLookTaskPage") {
+        let param = {
+          type: item.param.port_type,
+          status: item.param.status,
+          text: item.param.content,
+          selectedText: item.param.selectedText
+        };
+        this.newSearchParam = param;
+      }
+    });
   }
 };
 </script>

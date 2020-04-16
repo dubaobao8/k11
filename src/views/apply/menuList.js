@@ -42,9 +42,9 @@ let menuArr = [
 if ((ruleUserArr1 && ruleUserArr1.indexOf(userId) > -1) || localStorage.getItem("status") == 3) {
   menuArr.push(munuItem1)
 }
-if (ruleUserArr2 && ruleUserArr2.indexOf(userId) > -1 || localStorage.getItem("status") == 3) {
-  menuArr.push(munuItem2)
-}
+// if (ruleUserArr2 && ruleUserArr2.indexOf(userId) > -1 || localStorage.getItem("status") == 3) {
+//   menuArr.push(munuItem2)
+// }
 // 工单数组
 export default [
   {
@@ -67,10 +67,10 @@ export default [
         name: "已完成的单据",
         url: "/takenum_done"
       },
-      {
-        name: "统计",
-        url: { path: "/statisticsNew", query: { pageStatus: 4 } }
-      }
+      // {
+      //   name: "统计",
+      //   url: { path: "/statisticsNew", query: { pageStatus: 4 } }
+      // }
     ] : [
         {
           name: "新增单据",
@@ -114,10 +114,10 @@ export default [
         name: "草稿箱",
         url: "/incident_draft"
       },
-      {
-        name: "统计",
-        url: { path: "/statisticsNew", query: { pageStatus: 1 } }
-      }
+      // {
+      //   name: "统计",
+      //   url: { path: "/statisticsNew", query: { pageStatus: 1 } }
+      // }
     ] : [
         {
           name: "新增单据",
@@ -159,10 +159,10 @@ export default [
         name: "已完成的单据",
         url: "/patrol_done"
       },
-      {
-        name: "统计",
-        url: { path: "/statisticsNew", query: { pageStatus: 2 } }
-      }
+      // {
+      //   name: "统计",
+      //   url: { path: "/statisticsNew", query: { pageStatus: 2 } }
+      // }
     ] : [
         {
           name: "新增单据",
@@ -244,10 +244,10 @@ export default [
         name: "已完成的单据",
         url: "/todotask_done"
       },
-      {
-        name: "统计",
-        url: { path: "/statisticsNew", query: { pageStatus: 6 } }
-      }
+      // {
+      //   name: "统计",
+      //   url: { path: "/statisticsNew", query: { pageStatus: 6 } }
+      // }
     ] : [
         {
           name: "新增单据",
@@ -296,10 +296,10 @@ export default [
         name: "草稿箱",
         url: "/purchase_draft"
       },
-      {
-        name: "统计",
-        url: { path: "/statisticsNew", query: { pageStatus: 5 } }
-      }
+      // {
+      //   name: "统计",
+      //   url: { path: "/statisticsNew", query: { pageStatus: 5 } }
+      // }
     ] : [
         {
           name: "新增单据",
@@ -383,10 +383,10 @@ export default [
         name: "已完成的文具采购",
         url: "/stationery_done"
       },
-      {
-        name: "统计",
-        url: { path: "/statisticsNew", query: { pageStatus: 8 } }
-      }
+      // {
+      //   name: "统计",
+      //   url: { path: "/statisticsNew", query: { pageStatus: 8 } }
+      // }
     ] : [
         {
           name: "新增文具采购",
