@@ -74,7 +74,7 @@
                       class="mb20"
                       multiple
                       ref="file-container"
-                      required
+                      :required="fileRequireStatus"
                       title="附件（现场照片）"/>
 
     <!-- 抄送人 -->
@@ -172,37 +172,22 @@
           detail_place: ""
         },
         //  是否锁定故障位置
-        isLockedLocation: false
+        isLockedLocation: false,
+        fileRequireStatus:true
       };
     },
     watch: {
-      // "form_model.place": {
-      //   handler(value, old) {
-      //     console.log(old);
-      //     // if (value && !old) {
-      //       this.form_model.detail_place = "";
-      //       this.preprocessData.detail_place = "";
-      //       this.placeCode = "";
-      //     // }
-      //     if (value) {
-      //       console.log('获取详细故障位置');
-      //       ChooseExtraPlace(value.join(',')).then(res => {
-      //         this.options.detail_place = res.data.data.map(item => {
-      //           return {
-      //             text: item.detail_place,
-      //             value: {
-      //               place: item.detail_place,
-      //               number: item.number
-      //             },
-      //           }
-      //         })
-      //       })
-      //     }
-      //
-      //   },
-      //   immediate: true,
-      //   deep: true
-      // },
+      "form_model.type": {
+        handler(value, old) {
+          if (value == "保养") {
+            this.fileRequireStatus = false
+          } else {
+            this.fileRequireStatus = true
+          }
+        },
+        immediate: true,
+        deep: true
+      },
       placeCode(value) {
         clearTimeout(inputDelayPlace);
         inputDelayPlace = setTimeout(() => {
@@ -359,7 +344,7 @@
         // if (!form.remark) {
         //   error.push('请填写【维修备注】！');
         // }
-        if (!form.file_url.length) {
+        if (!form.file_url.length&&this.fileRequireStatus) {
           error.push('请上传【附件】！')
         }
 
