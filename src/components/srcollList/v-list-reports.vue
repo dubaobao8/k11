@@ -86,10 +86,11 @@ export default {
           list: data[this.listKey],
           totalPage: data[this.totalKey]
         };
-      } 
+      }
     },
     //  下拉刷新
     onRefresh() {
+      this.$refs.list.resetFinishedStatus();
       this.getData(1)
         .then(res => {
           this.list = res.list;
@@ -172,8 +173,9 @@ export default {
       this.onRefresh();
     },
     extraParams: {
-      handler() {
-        this.onRefresh();
+      handler(newValue) {
+        window.scrollTo(0,0)
+        this.onRefresh()
       },
       deep: true
     }

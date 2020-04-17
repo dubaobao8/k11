@@ -54,6 +54,9 @@
       finished() {
         this.isFinished = true;
       },
+      resetFinishedStatus() {
+        this.isFinished = false;
+      },
       //  加载失败，出错
       setError() {
         this.isError = true;
