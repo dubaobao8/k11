@@ -91,6 +91,18 @@
             "8": {
               color: "#EA5117",
               desc: "发单人审批"
+            },
+            "9": {
+              color: "#b91ba8",
+              desc: "另约时间"
+            },
+            "10": {
+              color: "#2cd2f6",
+              desc: "待料"
+            },
+            "11": {
+              color: "#78970c",
+              desc: "其他"
             }
           },
           purchase: {
