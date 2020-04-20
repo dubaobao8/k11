@@ -9,7 +9,8 @@ import "font-awesome/css/font-awesome.css";
 import VueAwesomeSwiper from "vue-awesome-swiper";
 import "swiper/dist/css/swiper.css";
 import "@/assets/iconfont/iconfont.css"
-
+import Video from 'video.js'
+import 'video.js/dist/video-js.css'
 import Cube from "cube-ui";
 import {
   List,
@@ -32,6 +33,7 @@ import extend from "@/util/extend";
 import '@vant/touch-emulator';
 
 Vue.prototype.ex = extend;
+Vue.prototype.$video = Video
 
 Notify.setDefaultOptions({duration: 2000});
 Toast.setDefaultOptions({duration: 2000});
