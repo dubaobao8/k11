@@ -328,12 +328,13 @@ export default {
     canIAssign() {
       let resArr = this.info_data.user_role.role;
       let resArr2 = this.info_data.user_role.type;
+      let resArr3 = [2,9,10,11]
       let resStatus =
         resArr &&
-        resArr.split(",").indexOf(("2")||("8")||("9")||("11"));
+        resArr.split(",").indexOf(("2"));
       let resStatus2 =
         resArr2 && resArr2.split(",").indexOf(this.info_data.group_type + "");
-      return resStatus >= 0 && this.info_data.status == 2 && resStatus2 >= 0;
+      return resStatus >= 0 && resArr3.includes(this.info_data.status) && resStatus2 >= 0;
     },
     // 是否可以审批维修记录(通过或者不通过)
     canIApproval() {
